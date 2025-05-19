@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cosmic Tools Image Upscaler: Enhance image resolution with adjustable upscale levels. Increase size while maintaining quality.">
+    <meta name="keywords" content="image upscaler, enhance images, increase image resolution, free image upscaler, cosmic tools">
+    <meta name="author" content="Cosmic Tools">
+    <meta name="robots" content="index, follow">
+    <title>Cosmic Tools - Image Upscaler 🔍</title>
+    <meta property="og:title" content="Cosmic Tools - Image Upscaler">
+    <meta property="og:description" content="Upscale images online with adjustable resolution settings. Fast, free, and easy to use.">
+    <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-upscaler.jpg">
+    <meta property="og:url" content="https://cosmic-tools-hub.github.io/image-upscaler.html">
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1a1a3d, #2c2c54); color: #ffffff; position: relative;
+            font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+        }
+        main { flex-grow: 1; }
+        h1, h2, h3, button, label, select { font-family: 'Orbitron', sans-serif; }
+        .starry-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat; opacity: 0.3; z-index: -1;
+        }
+        .dragover { border: 2px dashed #4ecdc4; background-color: rgba(78, 205, 196, 0.1); }
+        .progress-bar { height: 8px; background-color: #2c2c54; border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: width 0.3s ease-in-out; }
+        .error-message { color: #ff6b6b; font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; }
+        .gradient-button { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: background 0.3s ease; }
+        .gradient-button:hover:not(:disabled) { background: linear-gradient(45deg, #4ecdc4, #ff6b6b); }
+        .gradient-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .custom-select {
+            background-color: #2c3e50; border: 1px solid #4a5568; color: #ffffff;
+            padding: 0.75rem; border-radius: 0.375rem; width: 100%;
+        }
+        .custom-select:focus { outline: none; border-color: #4ecdc4; box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.5); }
+        .adsterra-ad-container { display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; }
+        .sidebar-ad-container { display: flex; justify-content: center; align-items: flex-start; width: 160px; min-height: 600px; margin: 0 auto; }
+    </style>
+</head>
+<body class="font-extrabold">
+    <div class="starry-bg"></div>
+    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Tools - Image Upscaler 🔍</h1>
+                    <p class="mt-2 text-lg text-gray-300">Enhance your images with adjustable upscale levels</p>
+                </div>
+                <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
+                    ← Back to Tools
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="adsterra-ad-container">
+            <script type="text/javascript">
+                atOptions = { 'key' : '1b4ab7bf9b345f519520b8920fe6ffec', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+        </div>
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-white mb-4">Upscale Your Image 🌟</h2>
+                <div class="mb-4">
+                    <label class="block text-base font-bold text-gray-300 mb-2">Select Image</label>
+                    <div id="dropZone" class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
+                        <p class="text-gray-400 text-lg">Drag and drop your image here or click to select 🖼️</p>
+                        <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp, image/bmp, image/gif" class="hidden">
+                    </div>
+                    <p id="errorMessage" class="error-message hidden"></p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-base font-bold text-gray-300">Preview</label>
+                    <img id="previewImage" class="mt-2 max-w-full h-auto rounded-lg hidden shadow-md" alt="Image Preview">
+                </div>
+                <div class="mb-4">
+                    <label for="upscaleLevelSelect" class="block text-base font-bold text-gray-300">Upscale Level</label>
+                    <select id="upscaleLevelSelect" class="custom-select mt-1 text-lg">
+                        <option value="2">2x (Double Size)</option>
+                        <option value="3" selected>3x (Triple Size)</option>
+                        <option value="4">4x (Quadruple Size)</option>
+                    </select>
+                </div>
+                <button id="upscaleButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Upscale Image 🔍</button>
+                <div id="progressContainer" class="mt-4 hidden">
+                    <p class="text-base text-gray-300 mb-2 font-bold">Upscaling...</p>
+                    <div class="progress-bar"><div id="progressBar" class="progress-bar-fill" style="width: 0%"></div></div>
+                </div>
+                <div id="resultSection" class="mt-6 hidden">
+                    <h3 class="text-xl font-bold text-white">Upscale Result 🎉</h3>
+                    <p id="originalDimensionsText" class="text-base text-gray-300 font-bold"></p>
+                    <p id="upscaledDimensionsText" class="text-base text-gray-300 font-bold"></p>
+                    <div class="mt-4"><img id="upscaledImage" class="max-w-full h-auto rounded-lg shadow" alt="Upscaled Image"></div>
+                    <a id="downloadLink" href="#" class="mt-4 inline-block py-3 px-4 text-lg text-white rounded-md gradient-button font-bold">Download Upscaled Image ⬇️</a>
+                </div>
+            </div>
+            <aside class="hidden lg:block lg:w-1/3 space-y-6 flex-shrink-0">
+                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg">
+                     <script type="text/javascript">
+                        atOptions = { 'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/b76b4ebdfea57e3a5c5eedc01e04fe37/invoke.js"></script>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <footer class="bg-gray-900 bg-opacity-90 mt-10 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
+            <nav class="mt-4 flex justify-center space-x-4">
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+            </nav>
+        </div>
+    </footer>
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const imageInput = document.getElementById('imageInput');
+        const upscaleButton = document.getElementById('upscaleButton');
+        const previewImage = document.getElementById('previewImage');
+        const errorMessage = document.getElementById('errorMessage');
+        const upscaleLevelSelect = document.getElementById('upscaleLevelSelect');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const resultSection = document.getElementById('resultSection');
+        const originalDimensionsText = document.getElementById('originalDimensionsText');
+        const upscaledDimensionsText = document.getElementById('upscaledDimensionsText');
+        const upscaledImage = document.getElementById('upscaledImage');
+        const downloadLink = document.getElementById('downloadLink');
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        let originalFileName = 'image';
+        let currentFile = null;
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+        }
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) handleImageUpload(e.dataTransfer.files[0]);
+            else showError('Please drop an image file.');
+        });
+        dropZone.addEventListener('click', () => imageInput.click());
+        imageInput.addEventListener('change', () => { if (imageInput.files.length > 0) handleImageUpload(imageInput.files[0]); });
+
+        function handleImageUpload(file) {
+            originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || 'image';
+            currentFile = file;
+            const acceptedMimeTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/bmp', 'image/gif'];
+            const acceptedExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'];
+            let isValid = false;
+            const fileTypeLower = file.type ? file.type.toLowerCase() : "";
+            const fileNameLower = file.name.toLowerCase();
+            if (fileTypeLower && acceptedMimeTypes.includes(fileTypeLower)) isValid = true;
+            else { for (const ext of acceptedExtensions) if (fileNameLower.endsWith(ext)) { isValid = true; break; } }
+            if (!isValid) {
+                showError('Unsupported file. Use PNG, JPG, WebP, BMP, GIF. Type: ' + (fileTypeLower || 'unknown'));
+                imageInput.value = ''; upscaleButton.disabled = true; previewImage.classList.add('hidden'); currentFile = null; return;
+            }
+            upscaleButton.disabled = false; errorMessage.classList.add('hidden');
+            const reader = new FileReader();
+            reader.onload = (e) => { previewImage.src = e.target.result; previewImage.classList.remove('hidden'); };
+            reader.onerror = () => { showError('Error reading image.'); upscaleButton.disabled = true; previewImage.classList.add('hidden'); currentFile = null; };
+            reader.readAsDataURL(file);
+        }
+        upscaleButton.addEventListener('click', () => {
+            if (!currentFile) { showError('Please select an image first.'); return; }
+            upscaleButton.disabled = true;
+            progressContainer.classList.remove('hidden'); resultSection.classList.add('hidden'); progressBar.style.width = '0%';
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = (e) => img.src = e.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const scale = parseFloat(upscaleLevelSelect.value);
+                const newWidth = Math.round(img.naturalWidth * scale);
+                const newHeight = Math.round(img.naturalHeight * scale);
+                const MAX_DIMENSION = 10000;
+                if (newWidth > MAX_DIMENSION || newHeight > MAX_DIMENSION) {
+                    showError(`Upscaled dimensions (${newWidth}x${newHeight}px) exceed limit of ${MAX_DIMENSION}px.`);
+                    upscaleButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; return;
+                }
+                canvas.width = newWidth; canvas.height = newHeight;
+                ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10; progressBar.style.width = `${Math.min(progress, 100)}%`;
+                    if (progress >= 100) clearInterval(interval);
+                }, 100);
+                let upscaledDataUrl;
+                const outputMimeType = (currentFile.type === 'image/jpeg' || originalFileName.toLowerCase().endsWith('.jpg') || originalFileName.toLowerCase().endsWith('.jpeg')) ? 'image/jpeg' : 'image/png';
+                const outputQuality = outputMimeType === 'image/jpeg' ? 0.92 : undefined;
+                try { upscaledDataUrl = canvas.toDataURL(outputMimeType, outputQuality); }
+                catch (ex) {
+                    showError(`Upscale error: ${ex.message}. Image might be too large.`);
+                    console.error("toDataURL error:", ex);
+                    clearInterval(interval); progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; upscaleButton.disabled = false; return;
+                }
+                clearInterval(interval); progressBar.style.width = '100%';
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
+                    resultSection.classList.remove('hidden');
+                    originalDimensionsText.textContent = `Original: ${img.naturalWidth}x${img.naturalHeight}px, ${formatBytes(currentFile.size)}`;
+                    upscaledDimensionsText.textContent = `Upscaled: ${newWidth}x${newHeight}px`;
+                    upscaledImage.src = upscaledDataUrl;
+                    const extension = outputMimeType.split('/')[1] === 'jpeg' ? 'jpg' : outputMimeType.split('/')[1];
+                    downloadLink.href = upscaledDataUrl;
+                    downloadLink.download = `${originalFileName}_upscaled_${scale}x.${extension}`;
+                    downloadLink.onclick = () => {};
+                    upscaleButton.disabled = false;
+                }, 300);
+            };
+            img.onerror = () => { showError('Error loading image for upscaling.'); upscaleButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; };
+            reader.onerror = () => { showError('Error reading file for upscaling.'); upscaleButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; };
+            reader.readAsDataURL(currentFile);
+        });
+    </script>
+</body>
+</html>
