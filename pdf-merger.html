@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cosmic Tools PDF Merger: Merge multiple PDFs into one with image optimization. Fast, free, and easy to use online tool.">
+    <meta name="keywords" content="PDF merger, merge PDF online, combine PDF, optimize PDF images, free PDF tool, cosmic tools">
+    <meta name="author" content="Cosmic Tools">
+    <meta name="robots" content="index, follow">
+    <title>Cosmic Tools - PDF Merger 🔗</title>
+    <meta property="og:title" content="Cosmic Tools - PDF Merger">
+    <meta property="og:description" content="Merge multiple PDFs into a single file with optimized images. Free and user-friendly.">
+    <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-pdf-merger.jpg"> <!-- Update with your actual domain if different -->
+    <meta property="og:url" content="https://cosmic-tools-hub.github.io/pdf-merger.html"> <!-- Update with your actual domain if different -->
+    <link rel="icon" type="image/png" href="./favicon.png"> <!-- Assuming favicon is in the root -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF.js for Previews -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- PDF-Lib.js for Merging -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1a1a3d, #2c2c54); color: #ffffff; position: relative;
+            font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+        }
+        main { flex-grow: 1; }
+        h1, h2, h3, button, label { font-family: 'Orbitron', sans-serif; }
+        .starry-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat; opacity: 0.3; z-index: -1;
+        }
+        .dragover { border: 2px dashed #4ecdc4; background-color: rgba(78, 205, 196, 0.1); }
+        .progress-bar { height: 8px; background-color: #2c2c54; border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: width 0.3s ease-in-out; }
+        .error-message { color: #ff6b6b; font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; }
+        .gradient-button { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: background 0.3s ease; }
+        .gradient-button:hover:not(:disabled) { background: linear-gradient(45deg, #4ecdc4, #ff6b6b); }
+        .gradient-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pdf-item { cursor: move; transition: transform 0.2s; }
+        .pdf-item.dragging { opacity: 0.5; transform: scale(0.95); }
+        .custom-range { accent-color: #ec4899; }
+        /* Adsterra Ad Container Styling */
+        .adsterra-ad-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem; /* Corresponds to mb-6 */
+            /* You might need to adjust min-height based on Adsterra's ad dimensions if they cause layout shifts */
+            /* min-height: 90px; /* Example, adjust if needed */
+        }
+    </style>
+</head>
+<body class="font-extrabold">
+    <div class="starry-bg"></div>
+    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Tools - PDF Merger 🔗</h1>
+                    <p class="mt-2 text-lg text-gray-300">Combine multiple PDFs with image optimization</p>
+                </div>
+                <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
+                    ← Back to Tools
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Top Banner Ad - Adsterra -->
+        <div class="adsterra-ad-container">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '1b4ab7bf9b345f519520b8920fe6ffec', // Your Adsterra Key
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-white mb-4">Merge Your PDFs 📄</h2>
+                <div class="mb-4">
+                    <label class="block text-base font-bold text-gray-300 mb-2">Select PDFs</label>
+                    <div id="dropZone" class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
+                        <p class="text-gray-400 text-lg">Drag and drop PDFs here or click to select 📂</p>
+                        <input type="file" id="pdfInput" accept="application/pdf" multiple class="hidden">
+                    </div>
+                    <p id="errorMessage" class="error-message hidden"></p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-base font-bold text-gray-300">Uploaded PDFs (Drag to reorder)</label>
+                    <ul id="pdfList" class="mt-2 space-y-4"></ul>
+                </div>
+                <div class="mb-4">
+                    <label for="imageQuality" class="block text-base font-bold text-gray-300">Image Optimization Quality: <span id="qualityValue" class="text-pink-400">0.80</span></label>
+                    <input type="range" id="imageQuality" min="0.1" max="1" step="0.01" value="0.80" class="mt-1 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer custom-range">
+                    <p class="text-sm text-gray-400 mt-1 font-sans font-normal">Adjust quality for images in PDFs (0.1 to 1). (Note: Client-side effect on existing PDF images is limited).</p>
+                </div>
+                <button id="mergeButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Merge PDFs 🔗</button>
+                <div id="progressContainer" class="mt-4 hidden">
+                    <p class="text-base text-gray-300 mb-2 font-bold">Merging...</p>
+                    <div class="progress-bar">
+                        <div id="progressBar" class="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div id="resultSection" class="mt-6 hidden">
+                    <h3 class="text-xl font-bold text-white">Merged PDF 🎉</h3>
+                    <p id="mergedDetails" class="text-base text-gray-300 font-bold"></p>
+                    <div class="mt-4">
+                        <canvas id="mergedPreview" class="max-w-full h-auto rounded-lg shadow-md" aria-label="Merged PDF Preview"></canvas>
+                    </div>
+                    <a id="downloadLink" href="#" class="mt-4 inline-block py-3 px-4 text-lg text-white rounded-md gradient-button font-bold">Download Merged PDF ⬇️</a>
+                </div>
+            </div>
+            <!-- Sidebar Ad - Adsterra -->
+            <aside class="hidden lg:block lg:w-1/3 space-y-6 flex-shrink-0">
+                <div class="adsterra-ad-container min-h-[250px] bg-gray-800 bg-opacity-30 rounded-lg"> <!-- Example: a taller sidebar ad -->
+                     <script type="text/javascript">
+                        atOptions = {
+                            // Replace with a different Adsterra key/format if you have one for sidebars (e.g., 300x250)
+                            'key' : '1b4ab7bf9b345f519520b8920fe6ffec', // Using the same for example
+                            'format' : 'iframe',
+                            'height' : 250, // Adjust height for typical sidebar ad
+                            'width' : 300,  // Adjust width
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <footer class="bg-gray-900 bg-opacity-90 mt-10 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
+            <nav class="mt-4 flex justify-center space-x-4">
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+            </nav>
+        </div>
+    </footer>
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const pdfInput = document.getElementById('pdfInput');
+        const mergeButton = document.getElementById('mergeButton');
+        const pdfList = document.getElementById('pdfList');
+        const errorMessage = document.getElementById('errorMessage');
+        const imageQualitySlider = document.getElementById('imageQuality');
+        const qualityValueDisplay = document.getElementById('qualityValue');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const resultSection = document.getElementById('resultSection');
+        const mergedDetails = document.getElementById('mergedDetails');
+        const mergedPreview = document.getElementById('mergedPreview');
+        const downloadLink = document.getElementById('downloadLink');
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        let pdfFiles = [];
+
+        if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`;
+        } else {
+            console.error("PDF.js library not loaded.");
+        }
+         if (typeof PDFLib === 'undefined') {
+            console.error("PDF-Lib.js library not loaded.");
+            showError("Critical error: PDF manipulation library failed to load. Please refresh.");
+        }
+
+
+        imageQualitySlider.addEventListener('input', () => qualityValueDisplay.textContent = parseFloat(imageQualitySlider.value).toFixed(2));
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+        }
+
+        function updatePdfList() {
+            pdfList.innerHTML = '';
+            pdfFiles.forEach((fileObj, index) => {
+                const li = document.createElement('li');
+                li.className = 'pdf-item flex items-center justify-between bg-gray-700 p-3 rounded-lg shadow-md';
+                li.draggable = true; li.dataset.index = index;
+                li.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+                        <canvas id="pdfPreview${index}" class="w-12 h-16 border border-gray-600 rounded shadow" aria-label="PDF Preview"></canvas>
+                        <span class="text-sm text-gray-300 font-semibold">${fileObj.name}</span>
+                    </div>
+                    <button class="text-red-500 hover:text-red-300 font-bold text-xl" onclick="removePdf(${index})">×</button>`;
+                pdfList.appendChild(li);
+                renderPdfPreview(fileObj, index);
+            });
+            mergeButton.disabled = pdfFiles.length < 2;
+            setupDragAndDrop();
+        }
+
+        async function renderPdfPreview(file, index) {
+            const canvas = document.getElementById(`pdfPreview${index}`);
+            if (!canvas) return;
+            const context = canvas.getContext('2d');
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                if (typeof pdfjsLib === 'undefined' || !pdfjsLib.getDocument) { showError("PDF.js library not loaded for preview."); context.fillStyle = 'gray'; context.fillRect(0,0,canvas.width,canvas.height); return; }
+                const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const page = await pdfDoc.getPage(1);
+                const viewport = page.getViewport({ scale: 0.15 });
+                canvas.width = viewport.width; canvas.height = viewport.height;
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+            } catch (e) {
+                console.error(`Error rendering preview for ${file.name}:`, e);
+                context.fillStyle = 'rgba(200,50,50,0.3)'; context.fillRect(0,0,canvas.width,canvas.height);
+                context.fillStyle = 'white'; context.font = '8px Orbitron'; context.textAlign = 'center';
+                context.fillText('Err', canvas.width/2, canvas.height/2);
+            }
+        }
+
+        function removePdf(index) {
+            pdfFiles.splice(index, 1);
+            updatePdfList();
+        }
+
+        function setupDragAndDrop() {
+            let draggedItem = null;
+            pdfList.querySelectorAll('.pdf-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => { draggedItem = item; item.classList.add('dragging'); });
+                item.addEventListener('dragend', () => { item.classList.remove('dragging'); draggedItem = null; });
+                item.addEventListener('dragover', (e) => e.preventDefault());
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const targetItem = e.target.closest('.pdf-item');
+                    if (targetItem && draggedItem && targetItem !== draggedItem) {
+                        const fromIndex = parseInt(draggedItem.dataset.index);
+                        const toIndex = parseInt(targetItem.dataset.index);
+                        const [movedFile] = pdfFiles.splice(fromIndex, 1);
+                        pdfFiles.splice(toIndex, 0, movedFile);
+                        updatePdfList();
+                    }
+                });
+            });
+        }
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            if (files.length === 0 && e.dataTransfer.files.length > 0) { showError('Please drop PDF files only.'); return; }
+            if (files.length > 0) { pdfFiles.push(...files); updatePdfList(); }
+        });
+        dropZone.addEventListener('click', () => pdfInput.click());
+        pdfInput.addEventListener('change', () => {
+            const files = Array.from(pdfInput.files).filter(file => file.type === 'application/pdf');
+            if (files.length === 0 && pdfInput.files.length > 0) { showError('Please select PDF files only.'); pdfInput.value = ''; return; }
+            if (files.length > 0) { pdfFiles.push(...files); updatePdfList(); }
+            pdfInput.value = '';
+        });
+
+        mergeButton.addEventListener('click', async () => {
+            if (pdfFiles.length < 2) { showError('Please upload at least two PDFs.'); return; }
+             if (typeof PDFLib === 'undefined') { showError("PDF manipulation library not loaded."); return; }
+
+            mergeButton.disabled = true;
+            progressContainer.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+            progressBar.style.width = '0%';
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5; progressBar.style.width = `${Math.min(progress, 100)}%`;
+                if (progress >= 100) clearInterval(progressInterval);
+            }, 150);
+
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+                let totalPages = 0;
+                for (const file of pdfFiles) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+                    const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+                    copiedPages.forEach(page => mergedPdf.addPage(page));
+                    totalPages += pdfDoc.getPageCount();
+                }
+                console.log("Image quality setting (client-side effect is limited): " + imageQualitySlider.value);
+                const pdfBytes = await mergedPdf.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+
+                if (typeof pdfjsLib !== 'undefined' && pdfjsLib.getDocument) {
+                    const mergedPdfForPreview = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+                    const page = await mergedPdfForPreview.getPage(1);
+                    const viewport = page.getViewport({ scale: 0.3 });
+                    mergedPreview.width = viewport.width; mergedPreview.height = viewport.height;
+                    const context = mergedPreview.getContext('2d');
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                }
+                clearInterval(progressInterval); progressBar.style.width = '100%';
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
+                    resultSection.classList.remove('hidden');
+                    mergedDetails.textContent = `Merged PDF: ${totalPages} pages. Approx. Size: ${(pdfBytes.length / 1024 / 1024).toFixed(2)} MB`;
+                    downloadLink.href = url;
+                    downloadLink.download = `merged-cosmic-${Date.now()}.pdf`;
+                    downloadLink.onclick = () => { setTimeout(() => URL.revokeObjectURL(url), 100); }; // Revoke after download starts
+                    mergeButton.disabled = false;
+                }, 300);
+            } catch (e) {
+                console.error('Error merging PDFs:', e);
+                showError('Error merging PDFs: ' + e.message + '. Some PDFs might be encrypted or corrupted.');
+                clearInterval(progressInterval); progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
+                mergeButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
