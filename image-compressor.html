@@ -1,64 +1,135 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cosmic Tools Image Compressor: Optimize images with adjustable compression levels. Reduce file size without losing quality.">
-    <meta name="keywords" content="image compressor, optimize images, reduce image size, free image compressor, cosmic tools">
+    <meta name="description" content="Cosmic Tools Image Optimizer: Optimize images with adjustable quality levels. Reduce file size without losing quality.">
+    <meta name="keywords" content="image compressor, image optimizer, optimize images, reduce image size, free image compressor, cosmic tools, jpeg optimizer, png optimizer">
     <meta name="author" content="Cosmic Tools">
     <meta name="robots" content="index, follow">
-    <title>Cosmic Tools - Image Compressor 📉</title>
-    <meta property="og:title" content="Cosmic Tools - Image Compressor">
-    <meta property="og:description" content="Compress images online with adjustable quality settings. Fast, free, and easy to use.">
+    <title>Cosmic Tools - Image Optimizer</title>
+    <meta property="og:title" content="Cosmic Tools - Image Optimizer">
+    <meta property="og:description" content="Compress and optimize images online with adjustable quality settings. Fast, free, and easy to use.">
     <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-compressor.jpg">
     <meta property="og:url" content="https://cosmic-tools-hub.github.io/image-compressor.html">
     <link rel="icon" type="image/png" href="./favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --navy-darkest: #0a192f;
+            --navy-dark: #172a45;
+            --navy-card: #112240;
+            --navy-card-transparent: rgba(17, 34, 64, 0.85);
+            --navy-card-ad-transparent: rgba(17, 34, 64, 0.5);
+            --navy-input: #1d3454;
+            --navy-border: #304a6e;
+            --text-primary: #e6f1ff;
+            --text-secondary: #ccd6f6;
+            --text-muted: #8892b0;
+            --accent-pink: #f92a82;
+            --accent-cyan: #00d4ff;
+            --accent-teal-highlight: #64FFDA;
+            --error-red: #ff7b72; /* A more vibrant red for errors */
+            --success-green: var(--accent-teal-highlight); /* Teal for success */
+            --warning-orange: #ffb74d; /* For cases like size increase */
+        }
+
         body {
-            background: linear-gradient(to bottom, #1a1a3d, #2c2c54); color: #ffffff; position: relative;
-            font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, var(--navy-darkest), var(--navy-dark));
+            color: var(--text-primary);
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         main { flex-grow: 1; }
-        h1, h2, h3, button, label, select { font-family: 'Orbitron', sans-serif; }
+        h1, h2, h3, button, label, select { font-family: 'Orbitron', sans-serif; color: var(--text-primary); }
+        p, li, span, input::placeholder, .font-sans { color: var(--text-secondary); }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+
         .starry-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat; opacity: 0.3; z-index: -1;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.2;
+            z-index: -1;
         }
-        .dragover { border: 2px dashed #4ecdc4; background-color: rgba(78, 205, 196, 0.1); }
-        .progress-bar { height: 8px; background-color: #2c2c54; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: width 0.3s ease-in-out; }
-        .error-message { color: #ff6b6b; font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; }
-        .gradient-button { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: background 0.3s ease; }
-        .gradient-button:hover:not(:disabled) { background: linear-gradient(45deg, #4ecdc4, #ff6b6b); }
+
+        /* Overriding Tailwind Grays with Navy Theme */
+        .bg-gray-900 { background-color: var(--navy-darkest) !important; }
+        .bg-gray-800 { background-color: var(--navy-card) !important; }
+        .bg-opacity-90 { opacity: 1 !important; }
+        .bg-opacity-80 { background-color: var(--navy-card-transparent) !important; }
+        .bg-opacity-30 { background-color: var(--navy-card-ad-transparent) !important; }
+
+        .text-gray-300 { color: var(--text-secondary) !important; }
+        .text-gray-400 { color: var(--text-muted) !important; }
+        .text-white { color: var(--text-primary) !important; }
+
+        .border-gray-600, .border-gray-500 { border-color: var(--navy-border) !important; }
+
+        #dropZone { border-color: var(--navy-border); }
+        .dragover {
+            border: 2px dashed var(--accent-teal-highlight);
+            background-color: rgba(100, 255, 218, 0.08);
+        }
+
+        .progress-bar { height: 8px; background-color: var(--navy-input); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan)); transition: width 0.3s ease-in-out; }
+        
+        .message { font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif;}
+        .error-message { color: var(--error-red); /* Applied to #errorMessage directly via class too */ }
+        .success-message { color: var(--success-green); }
+        .info-message { color: var(--text-muted); }
+        .warning-message { color: var(--warning-orange); }
+
+
+        .gradient-button {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+            transition: background 0.3s ease, transform 0.1s ease;
+            color: var(--text-primary);
+        }
+        .gradient-button:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
+            transform: translateY(-1px);
+        }
         .gradient-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .custom-select {
-            background-color: #2c3e50; border: 1px solid #4a5568; color: #ffffff;
+            background-color: var(--navy-input);
+            border: 1px solid var(--navy-border);
+            color: var(--text-primary);
             padding: 0.75rem; border-radius: 0.375rem; width: 100%;
         }
-        .custom-select:focus { outline: none; border-color: #4ecdc4; box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.5); }
+        .custom-select:focus {
+            outline: none; border-color: var(--accent-teal-highlight);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.4);
+        }
+        #previewImage, #compressedImage { border: 1px solid var(--navy-border); background-color: rgba(0,0,0,0.1); }
+
         .adsterra-ad-container { display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; }
         .sidebar-ad-container { display: flex; justify-content: center; align-items: flex-start; width: 160px; min-height: 600px; margin: 0 auto; }
+        .list-item-emoji { margin-right: 0.5em; }
     </style>
 </head>
 <body class="font-extrabold">
     <div class="starry-bg"></div>
-    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+    <header class="bg-gray-900 shadow-lg">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-4xl font-bold text-white">Cosmic Tools - Image Compressor 📉</h1>
-                    <p class="mt-2 text-lg text-gray-300">Optimize your images with adjustable compression levels</p>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠 - Image Optimizer</h1>
+                    <p class="mt-2 text-lg text-gray-300">Optimize your images with adjustable quality levels</p>
                 </div>
                 <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
-                    &larr; Back to Tools
+                    ← Cosmic Hub
                 </a>
             </div>
         </div>
     </header>
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
         <div class="adsterra-ad-container">
             <script type="text/javascript">
                 atOptions = { 'key' : '1b4ab7bf9b345f519520b8920fe6ffec', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
@@ -66,60 +137,75 @@ html
             <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
         </div>
         <div class="flex flex-col lg:flex-row gap-6">
-            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold text-white mb-4">Compress Your Image 🚀</h2>
+            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-4">Optimize Your Image</h2>
                 <div class="mb-4">
                     <label class="block text-base font-bold text-gray-300 mb-2">Select Image</label>
                     <div id="dropZone" class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
-                        <p class="text-gray-400 text-lg">Drag and drop your image here or click to select 🖼️</p>
+                        <p class="text-gray-400 text-lg">Drag & Drop Image or Click to Select 🖼️</p>
                         <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp, image/bmp, image/gif" class="hidden">
                     </div>
-                    <p id="errorMessage" class="error-message hidden"></p>
+                    <p id="errorMessage" class="message error-message hidden"></p> <!-- Applied .message and .error-message -->
                 </div>
                 <div class="mb-4">
                     <label class="block text-base font-bold text-gray-300">Preview</label>
                     <img id="previewImage" class="mt-2 max-w-full h-auto rounded-lg hidden shadow-md" alt="Image Preview">
                 </div>
                 <div class="mb-4">
-                    <label for="compressionLevelSelect" class="block text-base font-bold text-gray-300">Compression Level (Output as JPEG)</label>
+                    <label for="compressionLevelSelect" class="block text-base font-bold text-gray-300">Quality Level (Output as JPEG)</label>
                     <select id="compressionLevelSelect" class="custom-select mt-1 text-lg">
-                        <option value="0.92">Low (High Quality, ~92%)</option>
-                        <option value="0.85">Medium-Low (Good Quality, ~85%)</option>
-                        <option value="0.75" selected>Medium (Balanced, ~75%)</option>
-                        <option value="0.60">Medium-High (Smaller Size, ~60%)</option>
-                        <option value="0.50">High (Smallest Size, ~50%)</option>
+                        <option value="0.92">Low Compression (High Quality, ~92%)</option>
+                        <option value="0.85">Medium-Low Compression (Good Quality, ~85%)</option>
+                        <option value="0.75" selected>Medium Compression (Balanced, ~75%)</option>
+                        <option value="0.60">Medium-High Compression (Smaller Size, ~60%)</option>
+                        <option value="0.50">High Compression (Smallest Size, ~50%)</option>
                     </select>
                 </div>
-                <button id="compressButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Compress Image 📉</button>
+                <button id="compressButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Optimize Image</button>
                 <div id="progressContainer" class="mt-4 hidden">
-                    <p class="text-base text-gray-300 mb-2 font-bold">Compressing...</p>
+                    <p class="text-base text-gray-300 mb-2 font-bold">Optimizing...</p>
                     <div class="progress-bar"><div id="progressBar" class="progress-bar-fill" style="width: 0%"></div></div>
                 </div>
                 <div id="resultSection" class="mt-6 hidden">
-                    <h3 class="text-xl font-bold text-white">Compression Result 🎉</h3>
-                    <p id="originalSizeText" class="text-base text-gray-300 font-bold"></p>
-                    <p id="compressedSizeText" class="text-base text-gray-300 font-bold"></p>
-                    <p id="sizeReductionText" class="text-base text-gray-300 font-bold"></p>
+                    <h3 class="text-xl font-bold text-white">Optimization Result</h3>
+                    <p id="originalSizeText" class="text-base text-gray-300 font-bold font-sans"></p>
+                    <p id="compressedSizeText" class="text-base text-gray-300 font-bold font-sans"></p>
+                    <p id="sizeReductionText" class="message text-base font-bold font-sans"></p> <!-- Will be styled by JS -->
                     <div class="mt-4"><img id="compressedImage" class="max-w-full h-auto rounded-lg shadow" alt="Compressed Image"></div>
-                    <a id="downloadLink" href="#" class="mt-4 inline-block py-3 px-4 text-lg text-white rounded-md gradient-button font-bold">Download Compressed Image ⬇️</a>
+                    <a id="downloadLink" href="#" class="mt-4 inline-block py-3 px-4 text-lg text-white rounded-md gradient-button font-bold">Download Optimized Image 💾</a>
                 </div>
             </div>
             <aside class="hidden lg:block lg:w-1/3 space-y-6 flex-shrink-0">
-                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg">
+                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg p-2">
                      <script type="text/javascript">
                         atOptions = { 'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
                     </script>
                     <script type="text/javascript" src="//www.highperformanceformat.com/b76b4ebdfea57e3a5c5eedc01e04fe37/invoke.js"></script>
                 </div>
+                 <div class="bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl text-gray-300 font-sans">
+                    <h3 class="text-xl font-bold text-white mb-3 font-orbitron">About Image Optimization</h3>
+                    <p class="text-sm leading-relaxed mt-2">This tool optimizes images by re-encoding them as JPEGs at your chosen quality level. Lower quality means smaller file sizes.</p>
+                    <p class="text-sm leading-relaxed mt-2">PNG, GIF, and WebP images with transparency will have their transparent backgrounds converted to white when output as JPEG.</p>
+                    <p class="text-sm leading-relaxed mt-2">Results depend on the original image and the selected quality. Experiment to find the best balance for your needs!</p>
+                </div>
             </aside>
         </div>
+        <section class="mt-10 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-bold text-white mb-4">How to Use Image Optimizer</h2>
+            <ol class="list-decimal list-inside text-gray-300 space-y-3 font-sans font-normal">
+                <li><span class="list-item-emoji">🖼️</span><strong>Upload Image:</strong> Drag and drop your image file (PNG, JPG, WebP, BMP, GIF), or click to select.</li>
+                <li><span class="list-item-emoji">🎨</span><strong>Adjust Quality:</strong> Select your desired compression/quality level from the dropdown. The image will be output as a JPEG.</li>
+                <li><span class="list-item-emoji">✨</span><strong>Optimize:</strong> Click the "Optimize Image" button.</li>
+                <li><span class="list-item-emoji">💾</span><strong>Download:</strong> Review the result and download your optimized image.</li>
+            </ol>
+        </section>
     </main>
-    <footer class="bg-gray-900 bg-opacity-90 mt-10 py-8">
+    <footer class="bg-gray-900 mt-10 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
             <nav class="mt-4 flex justify-center space-x-4">
-                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
-                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service</a>
             </nav>
         </div>
     </footer>
@@ -145,7 +231,7 @@ html
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.classList.remove('hidden');
-            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+            setTimeout(() => errorMessage.classList.add('hidden'), 7000); // Increased duration
         }
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
@@ -164,6 +250,7 @@ html
         });
         dropZone.addEventListener('click', () => imageInput.click());
         imageInput.addEventListener('change', () => { if (imageInput.files.length > 0) handleImageUpload(imageInput.files[0]); });
+        
         function handleImageUpload(file) {
             originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || 'image';
             currentFile = file;
@@ -172,75 +259,109 @@ html
             let isAccepted = false;
             const fileTypeLower = file.type ? file.type.toLowerCase() : "";
             const fileNameLower = file.name.toLowerCase();
+
             if (fileTypeLower && acceptedMimeTypes.includes(fileTypeLower)) isAccepted = true;
             else { for (const ext of acceptedExtensions) if (fileNameLower.endsWith(ext)) { isAccepted = true; break; } }
+            
             if (!isAccepted) {
-                showError('Unsupported file. Use PNG, JPG, WebP, BMP, GIF. Type: ' + (fileTypeLower || 'unknown'));
-                imageInput.value = ''; compressButton.disabled = true; previewImage.classList.add('hidden'); currentFile = null; return;
+                showError('Unsupported file type. Please use PNG, JPG, WebP, BMP, or GIF. Detected type: ' + (fileTypeLower || 'unknown'));
+                imageInput.value = ''; compressButton.disabled = true; previewImage.classList.add('hidden'); currentFile = null; resultSection.classList.add('hidden'); return;
             }
-            compressButton.disabled = false; errorMessage.classList.add('hidden');
+            compressButton.disabled = false; errorMessage.classList.add('hidden'); resultSection.classList.add('hidden');
             const reader = new FileReader();
             reader.onload = (e) => { previewImage.src = e.target.result; previewImage.classList.remove('hidden'); };
-            reader.onerror = () => { showError('Error reading image.'); compressButton.disabled = true; previewImage.classList.add('hidden'); currentFile = null; };
+            reader.onerror = () => { showError('Error reading image for preview.'); compressButton.disabled = true; previewImage.classList.add('hidden'); currentFile = null; };
             reader.readAsDataURL(file);
         }
+
         compressButton.addEventListener('click', () => {
-            if (!currentFile) { showError('Please select an image.'); return; }
+            if (!currentFile) { showError('Please select an image first.'); return; }
             compressButton.disabled = true;
             progressContainer.classList.remove('hidden'); resultSection.classList.add('hidden'); progressBar.style.width = '0%';
+            
             const img = new Image();
             const reader = new FileReader();
-            reader.onload = (e) => img.src = e.target.result;
-            img.onload = () => {
+            reader.onload = (e) => img.src = e.target.result; // Load image data into Image object
+            
+            img.onload = () => { // Image object has loaded the data
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
-                if (currentFile.type === 'image/png' || currentFile.type === 'image/gif' || currentFile.type === 'image/webp') {
-                    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                canvas.width = img.naturalWidth; 
+                canvas.height = img.naturalHeight;
+
+                // Fill background with white for transparent images (PNG, GIF, some WebP)
+                // as JPEG doesn't support transparency.
+                if (currentFile.type === 'image/png' || currentFile.type === 'image/gif' || 
+                   (currentFile.type === 'image/webp' && !img.src.startsWith('data:image/jpeg'))) { // Crude check if webp might be opaque
+                    ctx.fillStyle = '#FFFFFF'; // White background
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
+                
                 ctx.drawImage(img, 0, 0);
+                
                 let progress = 0;
                 const interval = setInterval(() => {
-                    progress += 10; progressBar.style.width = `${Math.min(progress, 100)}%`;
-                    if (progress >= 100) clearInterval(interval);
-                }, 100);
+                    progress += 10; progressBar.style.width = `${Math.min(progress, 90)}%`; // Stop at 90% for visual processing time
+                    if (progress >= 90) clearInterval(interval);
+                }, 50); // Faster progress bar update
+
                 const quality = parseFloat(compressionLevelSelect.value);
                 let compressedDataUrl;
-                try { compressedDataUrl = canvas.toDataURL('image/jpeg', quality); }
-                catch (err) {
-                    showError(`Compression error: ${err.message}. Image might be too large.`);
+                try { 
+                    compressedDataUrl = canvas.toDataURL('image/jpeg', quality); 
+                } catch (err) {
+                    showError(`Compression error: ${err.message}. The image might be too large or unsupported for canvas processing.`);
                     console.error("Canvas toDataURL error:", err);
                     clearInterval(interval); progressContainer.classList.add('hidden'); compressButton.disabled = false; progressBar.style.width = '0%'; return;
                 }
-                if (!compressedDataUrl || compressedDataUrl === 'data:,') {
-                    showError('Error generating compressed image data.');
+
+                if (!compressedDataUrl || compressedDataUrl === 'data:,') { // Check for empty data URL
+                    showError('Error generating compressed image data. The operation might have failed silently.');
                     clearInterval(interval); progressContainer.classList.add('hidden'); compressButton.disabled = false; progressBar.style.width = '0%'; return;
                 }
+
                 const originalSizeBytes = currentFile.size;
                 const head = 'data:image/jpeg;base64,';
                 const imageAsBase64 = compressedDataUrl.substring(head.length);
-                const compressedSizeBytes = Math.round(imageAsBase64.length * 0.75);
+                const compressedSizeBytes = Math.round(imageAsBase64.length * 0.75); // Estimate byte size from base64
+                
                 clearInterval(interval); progressBar.style.width = '100%';
-                setTimeout(() => {
+                
+                setTimeout(() => { // Slight delay for smoother UI transition
                     progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
                     resultSection.classList.remove('hidden');
+                    
                     originalSizeText.textContent = `Original Size: ${formatBytes(originalSizeBytes)}`;
-                    compressedSizeText.textContent = `Compressed Size: ${formatBytes(compressedSizeBytes)}`;
-                    let reductionPercentage = 0;
-                    if (originalSizeBytes > 0 && compressedSizeBytes < originalSizeBytes) {
-                       reductionPercentage = (((originalSizeBytes - compressedSizeBytes) / originalSizeBytes) * 100);
+                    compressedSizeText.textContent = `Optimized Size: ${formatBytes(compressedSizeBytes)}`;
+                    
+                    sizeReductionText.className = 'message text-base font-bold font-sans '; // Reset classes
+                    if (compressedSizeBytes < originalSizeBytes && originalSizeBytes > 0) {
+                        const reductionPercentage = (((originalSizeBytes - compressedSizeBytes) / originalSizeBytes) * 100);
+                        sizeReductionText.textContent = `Size Reduction: ${reductionPercentage.toFixed(2)}%`;
+                        sizeReductionText.classList.add('success-message');
+                    } else if (compressedSizeBytes > originalSizeBytes) {
+                        sizeReductionText.textContent = `Size Increased. Original might be highly optimized or a different format.`;
+                        sizeReductionText.classList.add('warning-message');
+                    } else {
+                        sizeReductionText.textContent = `No significant size change.`;
+                        sizeReductionText.classList.add('info-message');
                     }
-                    sizeReductionText.textContent = `Size Reduction: ${reductionPercentage.toFixed(2)}%`;
+
                     compressedImage.src = compressedDataUrl;
                     downloadLink.href = compressedDataUrl;
-                    downloadLink.download = `${originalFileName}_compressed.jpg`;
-                    downloadLink.onclick = () => {};
+                    downloadLink.download = `${originalFileName}_optimized.jpg`; // Changed to _optimized
                     compressButton.disabled = false;
                 }, 300);
             };
-            img.onerror = () => { showError('Error loading image for compression.'); compressButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; };
-            reader.onerror = () => { showError('Error reading file for compression.'); compressButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; };
-            reader.readAsDataURL(currentFile);
+            img.onerror = () => { 
+                showError('Error loading image for compression. It might be corrupted or an unsupported format variation.'); 
+                compressButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
+            };
+            reader.onerror = () => { 
+                showError('Error reading file for compression.'); 
+                compressButton.disabled = false; progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
+            };
+            reader.readAsDataURL(currentFile); // Start reading the file
         });
     </script>
 </body>
