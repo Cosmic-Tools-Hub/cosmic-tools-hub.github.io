@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Tools - Image Resizer & Optimizer 🛠️</title>
+    <title>Cosmic Tools 🌠 - Image Resizer & Optimizer</title>
     <meta name="description" content="Cosmic Tools Image Resizer: Easily resize and optimize your JPG, PNG, and WEBP images online. Adjust dimensions, quality, and maintain aspect ratio. Fast, free, and responsive.">
     <meta name="keywords" content="image resizer, image optimizer, resize image, cosmic tools, free image resizer, jpg resizer, png resizer, webp resizer, online tool, responsive resizer">
     <meta name="author" content="Cosmic Tools">
@@ -14,54 +14,148 @@
     <meta property="og:description" content="Easily resize and optimize your JPG, PNG, and WEBP images online with Cosmic Tools.">
     <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-resizer.jpg">
     <link rel="icon" type="image/png" href="./favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --navy-darkest: #0a192f;
+            --navy-dark: #172a45;
+            --navy-card: #112240;
+            --navy-card-transparent: rgba(17, 34, 64, 0.85);
+            --navy-input: #1d3454;
+            --navy-border: #304a6e;
+            --text-primary: #e6f1ff;
+            --text-secondary: #ccd6f6;
+            --text-muted: #8892b0;
+            --accent-pink: #f92a82;
+            --accent-cyan: #00d4ff;
+            --accent-teal-highlight: #64FFDA;
+            --error-red: #ff7b72;
+            --success-green: var(--accent-teal-highlight);
+            --info-blue: #60a5fa;
+        }
+
         body {
-            background: linear-gradient(to bottom, #1a1a3d, #2c2c54); color: #ffffff; position: relative;
-            font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, var(--navy-darkest), var(--navy-dark));
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         main { flex-grow: 1; }
-        h1, h2, h3, button, label, select, input[type="number"] { font-family: 'Orbitron', sans-serif; }
+        h1, h2, h3, button, label, select, input[type="number"] { font-family: 'Orbitron', sans-serif; color: var(--text-primary); }
+        p, li, span, input::placeholder, .font-sans { color: var(--text-secondary); }
+
+
         .starry-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat; opacity: 0.3; z-index: -1;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.2; z-index: -1;
         }
-        .dragover { border: 2px dashed #4ecdc4; background-color: rgba(78, 205, 196, 0.1); }
-        .progress-bar { height: 8px; background-color: #2c2c54; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: width 0.3s ease-in-out; }
-        .error-message { color: #ff6b6b; font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; }
-        .gradient-button { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: background 0.3s ease; }
-        .gradient-button:hover:not(:disabled) { background: linear-gradient(45deg, #4ecdc4, #ff6b6b); }
+
+        /* Tailwind Overrides & Theme Application */
+        .bg-gray-900 { background-color: var(--navy-darkest) !important; }
+        .bg-gray-800 { background-color: var(--navy-card) !important; }
+        .bg-opacity-80 { background-color: var(--navy-card-transparent) !important; }
+        .bg-opacity-30 { background-color: rgba(17, 34, 64, 0.5) !important; }
+        .text-gray-300 { color: var(--text-secondary) !important; }
+        .text-gray-400 { color: var(--text-muted) !important; }
+        .text-white { color: var(--text-primary) !important; }
+        .border-gray-600 { border-color: var(--navy-border) !important; }
+        .border-gray-500 { border-color: var(--navy-border) !important; } /* For checkbox */
+
+
+        #dropZone { border-color: var(--navy-border); }
+        .dragover {
+            border: 2px dashed var(--accent-teal-highlight);
+            background-color: rgba(100, 255, 218, 0.08);
+        }
+
+        .progress-bar { height: 8px; background-color: var(--navy-input); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan)); transition: width 0.3s ease-in-out; }
+        
+        .message { font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif;}
+        .error-message { color: var(--error-red); }
+        .success-message { color: var(--success-green); }
+        .info-message { color: var(--info-blue); }
+
+        .gradient-button {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+            transition: background 0.3s ease, transform 0.1s ease;
+            border: none;
+            color: var(--text-primary);
+        }
+        .gradient-button:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
+            transform: translateY(-1px);
+        }
         .gradient-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .custom-input, .custom-select {
-            background-color: #2c3e50; border: 1px solid #4a5568; color: #ffffff;
+            background-color: var(--navy-input);
+            border: 1px solid var(--navy-border);
+            color: var(--text-primary);
             padding: 0.75rem; border-radius: 0.375rem; width: 100%;
         }
-        .custom-input:focus, .custom-select:focus { outline: none; border-color: #4ecdc4; box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.5); }
-        .custom-label { font-weight: bold; color: #cbd5e0; margin-bottom: 0.5rem; display: block; }
-        #qualityValueOutput { color: #4ecdc4; font-weight: bold; margin-left: 10px; }
-        .custom-range { accent-color: #ec4899; }
-        .adsterra-ad-container { display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; }
-        .sidebar-ad-container { display: flex; justify-content: center; align-items: flex-start; width: 160px; min-height: 600px; margin: 0 auto; }
+        .custom-input:focus, .custom-select:focus {
+            outline: none; border-color: var(--accent-teal-highlight);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.4);
+        }
+        .custom-input::placeholder { color: var(--text-muted); }
+        .custom-label { font-weight: bold; color: var(--text-secondary); margin-bottom: 0.5rem; display: block; }
+        #qualityValueOutput { color: var(--accent-pink); font-weight: bold; margin-left: 10px; }
+        .custom-range {
+            accent-color: var(--accent-pink); /* Thumb color */
+            background-color: transparent; /* Remove default track for webkit */
+        }
+        /* Webkit (Chrome, Safari, Opera, Edge Chromium) Track */
+        .custom-range::-webkit-slider-runnable-track {
+            background: var(--navy-input);
+            height: 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid var(--navy-border);
+        }
+        /* Firefox Track */
+        .custom-range::-moz-range-track {
+            background: var(--navy-input);
+            height: 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid var(--navy-border);
+        }
+
+        #originalImagePreview, #resizedImage { border: 1px solid var(--navy-border); background-color: rgba(0,0,0,0.1); }
+
+        .adsterra-ad-container {
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-ad-container {
+            display: flex; justify-content: center; align-items: flex-start;
+            width: 160px; min-height: 600px; margin: 0 auto;
+        }
+        .list-item-emoji { margin-right: 0.5em; }
+        /* Ensure checkbox is themed */
+        #aspectRatioCheckbox { background-color: var(--navy-input); border-color: var(--navy-border); }
+        #aspectRatioCheckbox:checked { background-color: var(--accent-pink); }
     </style>
 </head>
 <body class="font-extrabold">
     <div class="starry-bg"></div>
-    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+    <header class="bg-gray-900 shadow-lg">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-4xl font-bold text-white">Cosmic Tools - Image Resizer 🛠️</h1>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠 - Image Resizer & Optimizer</h1>
                     <p class="mt-2 text-lg text-gray-300">Resize and optimize your images with precision</p>
                 </div>
                 <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
-                    ← Back to Tools
+                    ← Cosmic Hub
                 </a>
             </div>
         </div>
     </header>
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
         <div class="adsterra-ad-container">
             <script type="text/javascript">
                 atOptions = { 'key' : '1b4ab7bf9b345f519520b8920fe6ffec', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
@@ -69,11 +163,11 @@
             <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
         </div>
         <div class="flex flex-col lg:flex-row gap-6">
-            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold text-white mb-4">Resize Your Image 🌌</h2>
+            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-4">Resize Your Image</h2>
                 <div class="mb-4">
                     <label class="custom-label">1. Select Image</label>
-                    <div id="dropZone" class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
+                    <div id="dropZone" class="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
                         <p class="text-gray-400 text-lg">Drag & drop image here or click to select 🖼️</p>
                         <input type="file" id="imageUploadInput" accept="image/jpeg, image/png, image/webp" class="hidden">
                     </div>
@@ -96,14 +190,14 @@
                     </div>
                 </div>
                 <div class="mb-4 flex items-center">
-                    <input type="checkbox" id="aspectRatioCheckbox" checked class="h-5 w-5 text-indigo-400 focus:ring-indigo-300 border-gray-500 rounded bg-gray-700 custom-range">
+                    <input type="checkbox" id="aspectRatioCheckbox" checked class="h-5 w-5 focus:ring-offset-gray-800">
                     <label for="aspectRatioCheckbox" class="ml-2 text-gray-300 font-sans font-semibold">Maintain Aspect Ratio</label>
                 </div>
                 <div class="mb-4">
                     <label for="imageQualitySlider" class="custom-label">3. Quality (0.1 - 1.0 for JPG/WEBP):
-                        <span id="qualityValueOutput">0.85</span>
+                        <span id="qualityValueOutput" class="font-orbitron">0.85</span>
                     </label>
-                    <input type="range" id="imageQualitySlider" min="0.1" max="1" step="0.01" value="0.85" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer custom-range">
+                    <input type="range" id="imageQualitySlider" min="0.1" max="1" step="0.01" value="0.85" class="w-full h-2 rounded-lg appearance-none cursor-pointer custom-range">
                 </div>
                 <div class="mb-6">
                     <label for="outputFormatSelect" class="custom-label">4. Output Format:</label>
@@ -113,47 +207,52 @@
                         <option value="image/webp">WEBP</option>
                     </select>
                 </div>
-                <button id="resizeButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Resize Image ⚙️</button>
+                <button id="resizeButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Resize Image ✨</button>
                 <div id="progressContainer" class="mt-4 hidden">
                     <p class="text-base text-gray-300 mb-2 font-bold">Resizing...</p>
                     <div class="progress-bar"><div id="progressBar" class="progress-bar-fill" style="width: 0%"></div></div>
                 </div>
                 <div id="resultSection" class="mt-6 hidden">
-                    <h3 class="text-xl font-bold text-white">Resize Result 🎉</h3>
-                    <p id="resizedDimensionsText" class="text-base text-gray-300 font-bold"></p>
+                    <h3 class="text-xl font-bold text-white">Resize Result</h3>
+                    <p id="resizedDimensionsText" class="text-base text-gray-300 font-bold font-sans"></p>
                     <div class="mt-4"><img id="resizedImage" class="max-w-full h-auto rounded-lg shadow" alt="Resized Image"></div>
                     <p id="resizedFileInfoText" class="text-sm text-gray-400 mt-1 font-sans font-normal"></p>
-                    <a id="downloadLink" href="#" class="mt-4 inline-block py-3 px-4 text-lg text-white rounded-md gradient-button font-bold hidden">Download Resized Image ⬇️</a>
+                    <a id="downloadLink" href="#" class="mt-4 inline-block py-3 px-4 text-lg text-white rounded-md gradient-button font-bold hidden">Download Resized Image 💾</a>
                 </div>
             </div>
             <aside class="hidden lg:block lg:w-1/3 space-y-6 flex-shrink-0">
-                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg">
+                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg p-2">
                      <script type="text/javascript">
                         atOptions = { 'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
                     </script>
                     <script type="text/javascript" src="//www.highperformanceformat.com/b76b4ebdfea57e3a5c5eedc01e04fe37/invoke.js"></script>
                 </div>
+                <div class="bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl text-gray-300 font-sans">
+                    <h3 class="text-xl font-bold text-white mb-3 font-orbitron">About Image Resizing</h3>
+                    <p class="text-sm leading-relaxed mt-2">This tool allows you to change the dimensions (width and height) of your images. You can choose to maintain the original aspect ratio or set custom dimensions.</p>
+                    <p class="text-sm leading-relaxed mt-2">For JPEG and WEBP formats, you can adjust the quality slider to balance file size and visual appearance. PNG images are lossless and the quality slider does not apply to them.</p>
+                    <p class="text-sm leading-relaxed mt-2">All processing is done directly in your browser, ensuring your images are not uploaded to any server.</p>
+                </div>
             </aside>
         </div>
-        <section class="mt-10 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold text-white mb-4">How to Use This Resizer 📜</h2>
-            <ol class="list-decimal list-inside text-gray-300 space-y-2 font-sans font-normal">
-                <li><strong>Upload Image:</strong> Drag and drop or click to select (JPG, PNG, WEBP).</li>
-                <li><strong>Set Dimensions:</strong> Enter width/height. "Maintain Aspect Ratio" is on by default.</li>
-                <li><strong>Adjust Quality (JPG/WEBP):</strong> Use the slider. PNG quality is not affected by this slider.</li>
-                <li><strong>Select Output Format:</strong> Choose JPEG, PNG, or WEBP.</li>
-                <li><strong>Resize:</strong> Click the "Resize Image" button.</li>
-                <li><strong>Preview & Download:</strong> Review and download your resized image.</li>
+        <section class="mt-10 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-bold text-white mb-4">How to Use This Resizer</h2>
+            <ol class="list-decimal list-inside text-gray-300 space-y-3 font-sans font-normal">
+                <li><span class="list-item-emoji">🖼️</span><strong>Upload Image:</strong> Drag and drop or click to select (JPG, PNG, WEBP).</li>
+                <li><span class="list-item-emoji">📏</span><strong>Set Dimensions:</strong> Enter your desired width and/or height. Check "Maintain Aspect Ratio" if needed.</li>
+                <li><span class="list-item-emoji">🎨</span><strong>Adjust Quality (Optional):</strong> For JPG/WEBP, use the slider. (PNG quality is not affected).</li>
+                <li><span class="list-item-emoji">⚙️</span><strong>Select Output Format:</strong> Choose JPEG, PNG, or WEBP for your resized image.</li>
+                <li><span class="list-item-emoji">✨</span><strong>Resize:</strong> Click the "Resize Image" button.</li>
+                <li><span class="list-item-emoji">💾</span><strong>Preview & Download:</strong> Review the resized image and download it.</li>
             </ol>
-            <p class="mt-4 text-gray-400 font-sans font-normal"><strong>Note:</strong> Processing is done in your browser for speed and privacy.</p>
         </section>
     </main>
-    <footer class="bg-gray-900 bg-opacity-90 mt-10 py-8">
+    <footer class="bg-gray-900 mt-10 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
             <nav class="mt-4 flex justify-center space-x-4">
-                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
-                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service</a>
             </nav>
         </div>
     </footer>
@@ -188,7 +287,7 @@
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.classList.remove('hidden');
-            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+            setTimeout(() => errorMessage.classList.add('hidden'), 7000);
         }
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
@@ -207,25 +306,32 @@
         });
         dropZone.addEventListener('click', () => imageUploadInput.click());
         imageUploadInput.addEventListener('change', () => { if (imageUploadInput.files.length > 0) handleImageUpload(imageUploadInput.files[0]); });
+        
         function handleImageUpload(file) {
             const acceptedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
             const acceptedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
             let isValid = false;
             const fileTypeLower = file.type ? file.type.toLowerCase() : "";
             const fileNameLower = file.name.toLowerCase();
+
             if (fileTypeLower && acceptedMimeTypes.includes(fileTypeLower)) isValid = true;
             else { for (const ext of acceptedExtensions) if (fileNameLower.endsWith(ext)) { isValid = true; break; } }
+            
             if (!isValid) {
-                showError('Unsupported file. Use JPG, PNG, or WEBP. Type: ' + (fileTypeLower || 'unknown'));
+                showError('Unsupported file type. Please use JPG, PNG, or WEBP. Detected type: ' + (fileTypeLower || 'unknown'));
                 imageUploadInput.value = ''; resetUI(); return;
             }
             originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || 'resized_image';
             originalType = fileTypeLower || (fileNameLower.endsWith('.png') ? 'image/png' : fileNameLower.endsWith('.webp') ? 'image/webp' : 'image/jpeg');
             originalFileSize = file.size;
+
+            // Set output format based on input, default to JPEG for safety if type is ambiguous after extension check
             if (originalType === 'image/png') outputFormatSelect.value = 'image/png';
             else if (originalType === 'image/webp') outputFormatSelect.value = 'image/webp';
             else outputFormatSelect.value = 'image/jpeg';
+            
             toggleQualitySliderVisibility();
+            
             const reader = new FileReader();
             reader.onload = (e) => {
                 originalImagePreview.src = e.target.result;
@@ -234,84 +340,139 @@
                 originalImageObject.onload = () => {
                     originalWidth = originalImageObject.naturalWidth;
                     originalHeight = originalImageObject.naturalHeight;
-                    targetWidthInput.value = originalWidth; targetHeightInput.value = originalHeight;
+                    targetWidthInput.value = originalWidth; 
+                    targetHeightInput.value = originalHeight;
                     originalInfoText.textContent = `Original: ${originalWidth}x${originalHeight}px, ${formatBytes(originalFileSize)}`;
                     resizeButton.disabled = false;
-                    resultSection.classList.add('hidden'); downloadLink.classList.add('hidden'); errorMessage.classList.add('hidden');
+                    resultSection.classList.add('hidden'); 
+                    downloadLink.classList.add('hidden'); 
+                    errorMessage.classList.add('hidden');
                 };
-                originalImageObject.onerror = () => { showError('Could not load image data.'); resetUI(); };
+                originalImageObject.onerror = () => { showError('Could not load image data. The file might be corrupted.'); resetUI(); };
                 originalImageObject.src = e.target.result;
             };
-            reader.onerror = () => { showError('Error reading file.'); resetUI(); };
+            reader.onerror = () => { showError('Error reading the selected file.'); resetUI(); };
             reader.readAsDataURL(file);
         }
         function resetUI() {
             resizeButton.disabled = true;
-            originalImagePreview.classList.add('hidden'); originalInfoText.textContent = '';
-            resultSection.classList.add('hidden'); downloadLink.classList.add('hidden');
-            targetWidthInput.value = ''; targetHeightInput.value = '';
-            originalImageObject = null; imageUploadInput.value = '';
+            originalImagePreview.classList.add('hidden'); 
+            originalInfoText.textContent = '';
+            resultSection.classList.add('hidden'); 
+            downloadLink.classList.add('hidden');
+            targetWidthInput.value = ''; 
+            targetHeightInput.value = '';
+            originalImageObject = null; 
+            imageUploadInput.value = ''; // Clear the file input
+            errorMessage.classList.add('hidden');
         }
         imageQualitySlider.addEventListener('input', () => { qualityValueOutput.textContent = parseFloat(imageQualitySlider.value).toFixed(2); });
         outputFormatSelect.addEventListener('change', toggleQualitySliderVisibility);
+
         function toggleQualitySliderVisibility() {
             const isPNG = outputFormatSelect.value === 'image/png';
             imageQualitySlider.disabled = isPNG;
-            const qualitySection = imageQualitySlider.closest('div.mb-4');
-            if (qualitySection) qualitySection.style.opacity = isPNG ? 0.5 : 1;
+            const qualitySection = imageQualitySlider.closest('div.mb-4'); // Find the parent container of the slider
+            if (qualitySection) { // Ensure the parent is found
+                 qualitySection.style.opacity = isPNG ? 0.5 : 1;
+            }
             qualityValueOutput.textContent = isPNG ? 'N/A' : parseFloat(imageQualitySlider.value).toFixed(2);
         }
+
         function updateDimensions(changedInput) {
             if (!originalImageObject || !aspectRatioCheckbox.checked) return;
             const newWidth = parseInt(targetWidthInput.value);
             const newHeight = parseInt(targetHeightInput.value);
-            if (changedInput === 'width' && newWidth > 0 && originalWidth > 0) targetHeightInput.value = Math.round((originalHeight / originalWidth) * newWidth);
-            else if (changedInput === 'height' && newHeight > 0 && originalHeight > 0) targetWidthInput.value = Math.round((originalWidth / originalHeight) * newHeight);
+
+            if (changedInput === 'width' && newWidth > 0 && originalWidth > 0) {
+                targetHeightInput.value = Math.round((originalHeight / originalWidth) * newWidth);
+            } else if (changedInput === 'height' && newHeight > 0 && originalHeight > 0) {
+                targetWidthInput.value = Math.round((originalWidth / originalHeight) * newHeight);
+            } else if (newWidth <= 0 && changedInput === 'width') { // If width becomes invalid, clear height
+                targetHeightInput.value = '';
+            } else if (newHeight <= 0 && changedInput === 'height') { // If height becomes invalid, clear width
+                targetWidthInput.value = '';
+            }
         }
         targetWidthInput.addEventListener('input', () => updateDimensions('width'));
         targetHeightInput.addEventListener('input', () => updateDimensions('height'));
-        aspectRatioCheckbox.addEventListener('change', () => { if (originalImageObject && targetWidthInput.value) updateDimensions('width'); });
+        aspectRatioCheckbox.addEventListener('change', () => { 
+            if (originalImageObject && targetWidthInput.value && parseInt(targetWidthInput.value) > 0) {
+                updateDimensions('width'); // Recalculate height based on width if aspect ratio is checked
+            } else if (originalImageObject && targetHeightInput.value && parseInt(targetHeightInput.value) > 0) {
+                 updateDimensions('height'); // Or based on height if width is empty
+            }
+        });
         resizeButton.addEventListener('click', () => {
             if (!originalImageObject) { showError('Please upload an image first.'); return; }
             let targetWidth = parseInt(targetWidthInput.value);
             let targetHeight = parseInt(targetHeightInput.value);
-            if (isNaN(targetWidth) || targetWidth <= 0) { showError('Please enter a valid width.'); return; }
-            if (isNaN(targetHeight) || targetHeight <= 0) { showError('Please enter a valid height.'); return; }
-            const MAX_DIMENSION = 12000;
-            if (targetWidth > MAX_DIMENSION || targetHeight > MAX_DIMENSION) { showError(`Dimensions exceed limit (${MAX_DIMENSION}px).`); return; }
+
+            if (isNaN(targetWidth) || targetWidth <= 0) { showError('Please enter a valid width (must be greater than 0).'); return; }
+            if (isNaN(targetHeight) || targetHeight <= 0) { showError('Please enter a valid height (must be greater than 0).'); return; }
+            
+            const MAX_DIMENSION = 12000; // Max dimension for canvas
+            if (targetWidth > MAX_DIMENSION || targetHeight > MAX_DIMENSION) { 
+                showError(`Target dimensions exceed the maximum allowed (${MAX_DIMENSION}px). Please choose smaller dimensions.`); 
+                return; 
+            }
+            
             resizeButton.disabled = true;
-            progressContainer.classList.remove('hidden'); resultSection.classList.add('hidden'); downloadLink.classList.add('hidden');
-            progressBar.style.width = '0%'; let progress = 0;
+            progressContainer.classList.remove('hidden'); 
+            resultSection.classList.add('hidden'); 
+            downloadLink.classList.add('hidden');
+            progressBar.style.width = '0%'; 
+            let progress = 0;
             const interval = setInterval(() => {
-                progress += 20; progressBar.style.width = `${Math.min(progress, 100)}%`;
-                if (progress >= 100) clearInterval(interval);
-            }, 100);
-            setTimeout(() => {
+                progress += 20; 
+                progressBar.style.width = `${Math.min(progress, 90)}%`; // Stop at 90% for processing
+                if (progress >= 90) clearInterval(interval);
+            }, 80); // Slightly faster progress
+
+            setTimeout(() => { // Simulate processing time
                 const canvas = document.createElement('canvas');
-                canvas.width = targetWidth; canvas.height = targetHeight;
+                canvas.width = targetWidth; 
+                canvas.height = targetHeight;
                 const ctx = canvas.getContext('2d');
                 const outputFormat = outputFormatSelect.value;
-                if (outputFormat === 'image/jpeg' || (originalType === 'image/png' && outputFormat !== 'image/png')) {
-                    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // If outputting to JPEG and original was PNG (or any format where transparency needs handling)
+                // fill background with white. Or if original was JPEG to avoid black for potentially empty areas.
+                if (outputFormat === 'image/jpeg' || (originalType !== 'image/jpeg' && outputFormat === 'image/jpeg') ) {
+                    ctx.fillStyle = '#FFFFFF'; // White background
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
+                
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
                 ctx.drawImage(originalImageObject, 0, 0, targetWidth, targetHeight);
+                
                 const quality = parseFloat(imageQualitySlider.value);
                 let resizedImageDataURL;
-                try { resizedImageDataURL = outputFormat === 'image/png' ? canvas.toDataURL('image/png') : canvas.toDataURL(outputFormat, quality); }
-                catch (error) {
-                    showError(`Resize error: ${error.message}. Try smaller dimensions/format.`);
-                    clearInterval(interval); progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; resizeButton.disabled = false; return;
+                try {
+                    resizedImageDataURL = (outputFormat === 'image/png') ? canvas.toDataURL('image/png') : canvas.toDataURL(outputFormat, quality);
+                } catch (error) {
+                    showError(`Resize error: ${error.message}. This can happen if the target dimensions are too large for the browser to handle, or if the image format is unusual.`);
+                    clearInterval(interval); 
+                    progressContainer.classList.add('hidden'); 
+                    progressBar.style.width = '0%'; 
+                    resizeButton.disabled = false; 
+                    return;
                 }
+                
                 clearInterval(interval); progressBar.style.width = '100%';
-                setTimeout(() => {
+                
+                setTimeout(() => { // Delay for UI update
                     progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
                     resizedImage.src = resizedImageDataURL;
                     resizedDimensionsText.textContent = `Resized: ${targetWidth}x${targetHeight}px`;
+                    
                     const head = 'data:' + outputFormat + ';base64,';
                     const imageBase64 = resizedImageDataURL.substring(head.length);
-                    const resizedFileSizeBytes = Math.round(imageBase64.length * 0.75);
-                    const qualityText = outputFormat === 'image/png' ? 'N/A' : quality.toFixed(2);
+                    const resizedFileSizeBytes = Math.round(imageBase64.length * 0.75); // Estimate size
+                    const qualityText = (outputFormat === 'image/png') ? 'N/A (Lossless)' : quality.toFixed(2);
                     resizedFileInfoText.textContent = `Est. Size: ${formatBytes(resizedFileSizeBytes)} (Quality: ${qualityText}, Format: ${outputFormat.split('/')[1].toUpperCase()})`;
+                    
                     resultSection.classList.remove('hidden');
                     downloadLink.href = resizedImageDataURL;
                     const extension = outputFormat.split('/')[1] === 'jpeg' ? 'jpg' : outputFormat.split('/')[1];
@@ -319,9 +480,9 @@
                     downloadLink.classList.remove('hidden');
                     resizeButton.disabled = false;
                 }, 300);
-            }, 100);
+            }, 100); // Small delay before starting "processing"
         });
-        toggleQualitySliderVisibility();
+        toggleQualitySliderVisibility(); // Initial call
     </script>
 </body>
 </html>
