@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cosmic Background Remover: Instantly remove backgrounds from your images with AI precision. Free and easy to use.">
-    <meta name="keywords" content="background remover, remove bg, image editing, cosmic tools, free tool, transparent background">
+    <meta name="description" content="Cosmic Tools Background Remover: Instantly remove backgrounds from your images with AI precision. Free and easy to use.">
+    <meta name="keywords" content="background remover, remove bg, image editing, cosmic tools, free tool, transparent background, AI background removal">
     <meta name="author" content="Cosmic Tools">
     <meta name="robots" content="index, follow">
-    <title>Cosmic Background Remover ✨</title>
-    <meta property="og:title" content="Cosmic Background Remover">
+    <title>Cosmic Tools 🌠 - Background Remover</title>
+    <meta property="og:title" content="Cosmic Tools - Background Remover">
     <meta property="og:description" content="Effortlessly remove image backgrounds with our AI-powered tool. Get transparent PNGs in seconds.">
     <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-bg-remover.jpg">
     <meta property="og:url" content="https://cosmic-tools-hub.github.io/bg-remover.html">
@@ -16,202 +16,241 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --navy-darkest: #0a192f;
+            --navy-dark: #172a45;
+            --navy-card: #112240;
+            --navy-card-transparent: rgba(17, 34, 64, 0.85);
+            --navy-input: #1d3454;
+            --navy-border: #304a6e;
+            --text-primary: #e6f1ff;
+            --text-secondary: #ccd6f6;
+            --text-muted: #8892b0;
+            --accent-pink: #f92a82;
+            --accent-cyan: #00d4ff;
+            --accent-teal-highlight: #64FFDA;
+            --error-red: #ff7b72;
+            --success-green: var(--accent-teal-highlight);
+            --info-blue: #60a5fa;
+        }
+
         body {
-            background: linear-gradient(to bottom, #1a1a3d, #2c2c54);
-            color: #ffffff;
+            background: linear-gradient(to bottom, var(--navy-darkest), var(--navy-dark));
+            color: var(--text-primary);
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-        /* Removed main { flex-grow: 1; } as the new page-container will handle it */
         .page-container {
             flex-grow: 1;
-            display: flex; /* For overall centering if needed, or specific layout control */
-            justify-content: center; /* Centers the content-with-side-ad block */
+            display: flex;
+            justify-content: center;
             width: 100%;
+            padding-top: 1.5rem;
         }
         .content-with-side-ad {
             display: flex;
-            flex-direction: row; /* Side by side on larger screens */
-            justify-content: center; /* Center the group if it's narrower than page-container */
-            gap: 2rem; /* Space between main content and side ad */
+            flex-direction: row;
+            justify-content: center;
+            gap: 2rem;
             width: 100%;
-            max-width: calc(1024px + 160px + 2rem); /* max-w-4xl (1024px) + ad width + gap */
-            padding: 1.5rem; /* sm:px-6 lg:px-8 equivalent */
+            max-width: calc(1024px + 160px + 2rem);
         }
         main.main-content-area {
-            flex-grow: 1; /* Main content takes available space */
-            max-width: 1024px; /* Tailwind's max-w-4xl */
+            flex-grow: 1;
+            max-width: 1024px;
+            padding: 0 1rem;
         }
         aside.side-ad-area {
             width: 160px;
-            flex-shrink: 0; /* Prevent ad from shrinking */
-            min-height: 600px; /* For the ad */
-            display: none; /* Hidden by default, shown on larger screens */
+            flex-shrink: 0;
+            min-height: 600px;
+            display: none;
         }
-        @media (min-width: 1200px) { /* Show side ad on larger screens (adjust breakpoint as needed) */
+        @media (min-width: 1200px) {
             aside.side-ad-area {
                 display: block;
             }
         }
-        @media (max-width: 1199px) { /* Stack on smaller screens or hide side ad */
+        @media (max-width: 1199px) {
+            .page-container {
+                padding-top: 1rem;
+            }
             .content-with-side-ad {
                 flex-direction: column;
-                align-items: center; /* Center items when stacked */
+                align-items: center;
+                max-width: 1024px;
+            }
+            main.main-content-area {
+                padding: 0;
             }
             aside.side-ad-area {
-                /* display: block; */ /* If you want it stacked */
-                margin-top: 2rem; /* Space if stacked */
-                display: none; /* Or keep it hidden on smaller screens if preferred */
+                margin-top: 2rem;
+                width: 100%;
+                max-width: 728px;
+                min-height: auto;
+                display: none;
             }
         }
 
+        h1, h2, h3, button, label { font-family: 'Orbitron', sans-serif; color: var(--text-primary); }
+        p, li, span, input::placeholder, .font-sans { color: var(--text-secondary); }
 
-        h1, h2, h3, button, label { font-family: 'Orbitron', sans-serif; }
         .starry-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
-            opacity: 0.3;
-            z-index: -1;
+            opacity: 0.2; z-index: -1;
         }
+
+        .bg-gray-900 { background-color: var(--navy-darkest) !important; }
+        .bg-gray-800 { background-color: var(--navy-card) !important; }
+        .bg-opacity-80 { background-color: var(--navy-card-transparent) !important; }
+        .text-gray-300 { color: var(--text-secondary) !important; }
+        .text-white { color: var(--text-primary) !important; }
+
         .gradient-button {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            transition: background 0.3s ease;
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+            transition: background 0.3s ease, transform 0.1s ease;
             border: none;
-            color: white;
+            color: var(--text-primary);
             font-weight: bold;
             padding: 0.75rem 1.5rem;
             border-radius: 0.375rem;
             text-align: center;
         }
         .gradient-button:hover:not(:disabled) {
-            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
+            transform: translateY(-1px);
         }
-        .gradient-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .gradient-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .custom-file-input-container {
-            background-color: #2c3e50;
-            border: 1px solid #4a5568;
-            color: #ffffff;
+            background-color: var(--navy-input);
+            border: 1px solid var(--navy-border);
+            color: var(--text-secondary);
             padding: 0.75rem;
             border-radius: 0.375rem;
             width: 100%;
             cursor: pointer;
             text-align: center;
+            transition: border-color 0.2s ease;
         }
-        .custom-file-input-container:hover {
-            border-color: #4ecdc4;
+        .custom-file-input-container:hover, .custom-file-input-container.dragover {
+            border-color: var(--accent-teal-highlight);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.4);
         }
-        .custom-file-input-container input[type="file"] {
-            display: none;
-        }
+        .custom-file-input-container input[type="file"] { display: none; }
+
         .status-message {
             text-align: center;
             margin-top: 1rem;
             font-weight: bold;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border-radius: 0.375rem;
+            border: 1px solid transparent;
+            font-family: 'Montserrat', sans-serif;
         }
         .status-error {
-            color: #ff6b6b;
-            background-color: rgba(255, 107, 107, 0.1);
-            border: 1px solid #ff6b6b;
+            color: var(--error-red);
+            background-color: rgba(255, 123, 114, 0.1);
+            border-color: var(--error-red);
         }
         .status-success {
-            color: #4ecdc4;
-            background-color: rgba(78, 205, 196, 0.1);
-            border: 1px solid #4ecdc4;
+            color: var(--success-green);
+            background-color: rgba(100, 255, 218, 0.1);
+            border-color: var(--success-green);
         }
         .status-info {
-            color: #e0e0e0;
-            background-color: rgba(224, 224, 224, 0.1);
-            border: 1px solid #777;
+            color: var(--info-blue);
+            background-color: rgba(96, 165, 250, 0.1);
+            border-color: var(--info-blue);
         }
+
         .image-display-area {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 1.5rem;
-            gap: 1.5rem;
-            flex-wrap: wrap;
+            display: flex; justify-content: space-around; margin-top: 1.5rem;
+            gap: 1.5rem; flex-wrap: wrap;
         }
         .image-container {
-            flex: 1;
-            min-width: 280px;
+            flex: 1; min-width: 280px; max-width: 400px;
             text-align: center;
-            border: 2px solid #4a5568;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            background-color: rgba(44, 62, 80, 0.7);
+            border: 1px solid var(--navy-border);
+            padding: 1rem; border-radius: 0.5rem;
+            background-color: var(--navy-input);
         }
         .image-container h3 {
-            margin-top: 0;
-            font-size: 1.125rem;
-            color: #e0e0e0;
-            margin-bottom: 0.75rem;
+            margin-top: 0; font-size: 1.125rem;
+            color: var(--text-secondary); margin-bottom: 0.75rem;
         }
         .image-container img {
-            max-width: 100%;
-            max-height: 350px;
-            border: 1px solid #6b7280;
+            max-width: 100%; max-height: 350px;
+            border: 1px solid var(--navy-border);
             border-radius: 0.375rem;
             background-image:
-                linear-gradient(45deg, #374151 25%, transparent 25%),
-                linear-gradient(-45deg, #374151 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #374151 75%),
-                linear-gradient(-45deg, transparent 75%, #374151 75%);
+                linear-gradient(45deg, var(--navy-dark) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--navy-dark) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--navy-dark) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--navy-dark) 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        .hidden { display: none; }
-        .top-ad-container { /* Renamed for clarity */
+        .hidden { display: none !important; }
+
+        .primary-top-ad-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 20px 0;
+            margin: 1.5rem 0;
             min-height: 90px;
+            width: 100%;
         }
-        /* Footer ad container can remain as is, or you can choose not to have an ad there if the side ad is sufficient */
-        .footer-ad-placeholder { /* If you want to keep a placeholder for a potential different footer ad */
-             text-align: center; margin-bottom: 1.5rem; color: #6b7280;
-        }
+        .list-item-emoji { margin-right: 0.5em; }
     </style>
 </head>
 <body class="font-extrabold">
     <div class="starry-bg"></div>
-    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+    <header class="bg-gray-900 shadow-lg">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-4xl font-bold text-white">Cosmic Background Remover ✨</h1>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠 - Background Remover</h1>
                     <p class="mt-2 text-lg text-gray-300">Remove image backgrounds with cosmic speed & precision</p>
                 </div>
                 <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
-                    ← Back to Tools
+                    ← Cosmic Hub
                 </a>
             </div>
         </div>
     </header>
 
+    <!-- Adsterra 728x90 Ad Unit (Primary Top Banner Ad) -->
+    <div class="primary-top-ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '1b4ab7bf9b345f519520b8920fe6ffec', // Your main 728x90 ad key
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+    </div>
+
+
     <div class="page-container">
         <div class="content-with-side-ad">
-            <main class="main-content-area"> {/* Changed main tag slightly */}
+            <main class="main-content-area">
                 <div class="bg-gray-800 bg-opacity-80 p-6 md:p-8 rounded-lg shadow-xl">
-                    <h2 class="text-3xl font-bold text-white mb-6 text-center">Upload Your Image 🚀</h2>
+                    <h2 class="text-3xl font-bold text-white mb-6 text-center">Upload Your Image</h2>
 
                     <label for="imageFile" class="custom-file-input-container block mb-4">
-                        <span id="fileUploadText">Click to Choose File or Drag & Drop</span>
+                        <span id="fileUploadText">Click to Choose File or Drag & Drop 🖼️</span>
                         <input type="file" id="imageFile" accept="image/png, image/jpeg, image/webp">
                     </label>
 
                     <button id="removeBgButton" class="w-full py-3 px-4 text-lg gradient-button font-bold" disabled>
-                        Remove Background 🌌
+                        Remove Background ✨
                     </button>
 
                     <div id="status" class="status-message hidden"></div>
@@ -225,32 +264,27 @@
                             <h3>Processed Image</h3>
                             <img id="processedImage" src="#" alt="Processed">
                             <a id="downloadLink" href="#" download="processed_image.png" class="mt-4 gradient-button inline-block hidden">
-                                Download Processed Image ⬇️
+                                Download Processed Image 💾
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Adsterra 728x90 Ad Unit (Top/Below content ad) -->
-                <div class="top-ad-container my-8">
-                    <script type="text/javascript">
-                        atOptions = {
-                            'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
-                            'format' : 'iframe',
-                            'height' : 90,
-                            'width' : 728,
-                            'params' : {}
-                        };
-                    </script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
-                </div>
+                <section class="mt-10 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-4">How to Use Background Remover</h2>
+                    <ol class="list-decimal list-inside text-gray-300 space-y-3 font-sans font-normal">
+                        <li><span class="list-item-emoji">📤</span><strong>Upload Image:</strong> Drag & drop or click to select your image (PNG, JPG, or WEBP).</li>
+                        <li><span class="list-item-emoji">✨</span><strong>Remove Background:</strong> Click the "Remove Background" button and let the cosmic AI do its magic.</li>
+                        <li><span class="list-item-emoji">🖼️</span><strong>Preview & Download:</strong> View the original and processed images. Download your image with a transparent background.</li>
+                    </ol>
+                </section>
             </main>
 
             <aside class="side-ad-area">
                 <!-- Adsterra 160x600 Ad Unit (Side Ad) -->
                 <script type="text/javascript">
                     atOptions = {
-                        'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37',
+                        'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37', // Your 160x600 side ad key
                         'format' : 'iframe',
                         'height' : 600,
                         'width' : 160,
@@ -263,16 +297,12 @@
     </div>
 
 
-    <footer class="bg-gray-900 bg-opacity-90 mt-auto py-8">
+    <footer class="bg-gray-900 mt-auto py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="footer-ad-placeholder">
-                <!-- You could place a different, smaller footer ad here if desired -->
-                <!-- (Footer Ad Area) -->
-            </div>
             <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
             <nav class="mt-4 flex justify-center space-x-4">
-                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
-                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service</a>
             </nav>
         </div>
     </footer>
@@ -311,14 +341,14 @@
         const fileInputContainer = imageFileInput.parentElement;
         fileInputContainer.addEventListener('dragover', (event) => {
             event.preventDefault();
-            fileInputContainer.classList.add('border-teal-400', 'ring-2', 'ring-teal-400');
+            fileInputContainer.classList.add('dragover');
         });
         fileInputContainer.addEventListener('dragleave', () => {
-            fileInputContainer.classList.remove('border-teal-400', 'ring-2', 'ring-teal-400');
+            fileInputContainer.classList.remove('dragover');
         });
         fileInputContainer.addEventListener('drop', (event) => {
             event.preventDefault();
-            fileInputContainer.classList.remove('border-teal-400', 'ring-2', 'ring-teal-400');
+            fileInputContainer.classList.remove('dragover');
             handleFileSelect(event.dataTransfer.files);
         });
 
@@ -330,7 +360,10 @@
                     setStatus('Invalid file type. Please select a PNG, JPG, or WEBP image.', 'error');
                     selectedFile = null;
                     removeBgButton.disabled = true;
-                    fileUploadText.textContent = 'Click to Choose File or Drag & Drop';
+                    fileUploadText.innerHTML = 'Click to Choose File or Drag & Drop 🖼️';
+                    originalContainer.style.display = 'none';
+                    processedContainer.style.display = 'none';
+                    downloadLink.classList.add('hidden');
                     return;
                 }
 
@@ -349,7 +382,7 @@
             } else {
                 removeBgButton.disabled = true;
                 originalContainer.style.display = 'none';
-                fileUploadText.textContent = 'Click to Choose File or Drag & Drop';
+                fileUploadText.innerHTML = 'Click to Choose File or Drag & Drop 🖼️';
             }
         }
 
@@ -366,7 +399,7 @@
 
             setStatus('Processing your cosmic image...', 'info');
             removeBgButton.disabled = true;
-            processedImage.src = "#";
+            processedImage.src = "#"; 
             processedContainer.style.display = 'none';
             downloadLink.classList.add('hidden');
 
@@ -390,8 +423,8 @@
                     processedContainer.style.display = 'block';
                     downloadLink.href = imageUrl;
                     const fileNameParts = selectedFile.name.split('.');
-                    fileNameParts.pop(); // Remove original extension
-                    const baseName = fileNameParts.join('.');
+                    fileNameParts.pop(); 
+                    const baseName = fileNameParts.join('.') || 'image';
                     downloadLink.download = `${baseName}_cosmic_removed_bg.png`;
                     downloadLink.classList.remove('hidden');
                     setStatus('Background removed successfully! Ready to download.', 'success');
@@ -408,7 +441,7 @@
                     } catch (e) {
                         const textError = await response.text();
                         console.error('Non-JSON API Error:', textError);
-                        errorMsg = `API Error (${response.status}): ${textError || response.statusText}`;
+                         errorMsg = `API Error (${response.status}): ${textError || response.statusText || 'Unknown API error'}`;
                     }
                     setStatus(errorMsg, 'error');
                     console.error('API Error Details:', errorMsg);
@@ -423,7 +456,8 @@
 
         function setStatus(message, type = 'info') {
             statusDiv.textContent = message;
-            statusDiv.className = `status-message status-${type}`;
+            statusDiv.className = 'status-message hidden';
+            statusDiv.classList.add(`status-${type}`);
             statusDiv.classList.remove('hidden');
         }
     </script>
