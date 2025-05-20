@@ -1,16 +1,15 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cosmic Tools PDF Compressor: Attempt to reduce PDF file size using client-side processing. Results vary.">
-    <meta name="keywords" content="PDF compressor, compress PDF online, reduce PDF size, free PDF tool, cosmic tools, client-side PDF compression">
+    <meta name="description" content="Cosmic Tools PDF Optimizer: Attempt to reduce PDF file size using client-side processing. Results vary.">
+    <meta name="keywords" content="PDF optimizer, compress PDF online, reduce PDF size, free PDF tool, cosmic tools, client-side PDF compression, PDF shrink">
     <meta name="author" content="Cosmic Tools">
     <meta name="robots" content="index, follow">
-    <title>Cosmic Tools - PDF Compressor  छोटा करें</title>
-    <meta property="og:title" content="Cosmic Tools - PDF Compressor">
-    <meta property="og:description" content="Attempt to reduce PDF file size with client-side processing. Actual compression achieved depends on the PDF content and structure.">
+    <title>Cosmic Tools - PDF Optimizer</title>
+    <meta property="og:title" content="Cosmic Tools - PDF Optimizer">
+    <meta property="og:description" content="Attempt to reduce PDF file size with client-side processing. Actual optimization achieved depends on the PDF content and structure.">
     <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-pdf-compressor.jpg">
     <meta property="og:url" content="https://cosmic-tools-hub.github.io/pdf-compressor.html">
     <link rel="icon" type="image/png" href="./favicon.png">
@@ -19,49 +18,115 @@ html
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <style>
+        :root {
+            --navy-darkest: #0a192f;
+            --navy-dark: #172a45;
+            --navy-card: #112240;
+            --navy-card-transparent: rgba(17, 34, 64, 0.85);
+            --navy-card-ad-transparent: rgba(17, 34, 64, 0.5);
+            --navy-input: #1d3454;
+            --navy-border: #304a6e;
+            --text-primary: #e6f1ff;
+            --text-secondary: #ccd6f6;
+            --text-muted: #8892b0;
+            --accent-pink: #f92a82;
+            --accent-cyan: #00d4ff;
+            --accent-teal-highlight: #64FFDA;
+            --error-red: #ff7b72;
+            --success-green: var(--accent-teal-highlight);
+        }
+
         body {
-            background: linear-gradient(to bottom, #1a1a3d, #2c2c54); color: #ffffff; position: relative;
-            font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, var(--navy-darkest), var(--navy-dark));
+            color: var(--text-primary);
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         main { flex-grow: 1; }
-        h1, h2, h3, button, label, select { font-family: 'Orbitron', sans-serif; }
+        h1, h2, h3, button, label, select { font-family: 'Orbitron', sans-serif; color: var(--text-primary); }
+        p, li, span, input::placeholder, .font-sans { color: var(--text-secondary); }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+
         .starry-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat; opacity: 0.3; z-index: -1;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.2;
+            z-index: -1;
         }
-        .dragover { border: 2px dashed #4ecdc4; background-color: rgba(78, 205, 196, 0.1); }
-        .progress-bar { height: 8px; background-color: #2c2c54; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: width 0.3s ease-in-out; }
-        .message { font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; }
-        .error-message { color: #ff6b6b; }
-        .success-message { color: #4ecdc4; }
-        .info-message { color: #a0aec0; }
-        .gradient-button { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); transition: background 0.3s ease; }
-        .gradient-button:hover:not(:disabled) { background: linear-gradient(45deg, #4ecdc4, #ff6b6b); }
+
+        .bg-gray-900 { background-color: var(--navy-darkest) !important; }
+        .bg-gray-800 { background-color: var(--navy-card) !important; }
+        .bg-opacity-90 { opacity: 1 !important; }
+        .bg-opacity-80 { background-color: var(--navy-card-transparent) !important; }
+        .bg-opacity-30 { background-color: var(--navy-card-ad-transparent) !important; }
+
+        .text-gray-300 { color: var(--text-secondary) !important; }
+        .text-gray-400 { color: var(--text-muted) !important; }
+        .text-white { color: var(--text-primary) !important; }
+
+        .border-gray-600, .border-gray-500, #pdfPreviewCanvas { border-color: var(--navy-border) !important; }
+
+        #dropZone { border-color: var(--navy-border); }
+        .dragover {
+            border: 2px dashed var(--accent-teal-highlight);
+            background-color: rgba(100, 255, 218, 0.08);
+        }
+
+        .progress-bar { height: 8px; background-color: var(--navy-input); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan)); transition: width 0.3s ease-in-out; }
+
+        .message { font-size: 0.875rem; margin-top: 0.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif; }
+        .error-message { color: var(--error-red); }
+        .success-message { color: var(--success-green); }
+        .info-message { color: var(--text-muted); }
+
+        .gradient-button {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+            transition: background 0.3s ease, transform 0.1s ease;
+            color: var(--text-primary);
+        }
+        .gradient-button:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
+            transform: translateY(-1px);
+        }
         .gradient-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .custom-select, .custom-range {
-            background-color: #2c3e50; border: 1px solid #4a5568; color: #ffffff;
+            background-color: var(--navy-input);
+            border: 1px solid var(--navy-border);
+            color: var(--text-primary);
             padding: 0.75rem; border-radius: 0.375rem; width: 100%;
         }
-        .custom-select:focus, .custom-range:focus { outline: none; border-color: #4ecdc4; box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.5); }
-        .custom-range { accent-color: #ec4899; }
-        #pdfPreviewCanvas { border: 1px solid #4a5568; max-width: 100%; height: auto; }
-        .checkbox-label { font-family: 'Montserrat', sans-serif; font-weight: 600;}
+        .custom-select:focus, .custom-range:focus {
+            outline: none; border-color: var(--accent-teal-highlight);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.4);
+        }
+        .custom-range { accent-color: var(--accent-pink); }
+        #pdfPreviewCanvas { border: 1px solid var(--navy-border); max-width: 100%; height: auto; background-color: var(--navy-input); }
+        .checkbox-label { font-family: 'Montserrat', sans-serif; font-weight: 600; color: var(--text-secondary); }
+        .checkbox-label .text-xs { color: var(--text-muted); }
+        #qualityValueDisplay { color: var(--accent-pink); }
+
         .adsterra-ad-container { display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; }
         .sidebar-ad-container { display: flex; justify-content: center; align-items: flex-start; width: 160px; min-height: 600px; margin: 0 auto; }
+        .list-item-emoji { margin-right: 0.5em; /* Spacing for list item emojis */ }
     </style>
 </head>
 <body class="font-extrabold">
     <div class="starry-bg"></div>
-    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+    <header class="bg-gray-900 shadow-lg">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-4xl font-bold text-white">Cosmic Tools - PDF Compressor <span class="text-2xl">छोटा करें</span></h1>
-                    <p class="mt-2 text-lg text-gray-300">Attempt to reduce PDF file size (Client-Side)</p>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠 - PDF Optimizer</h1>
+                    <p class="mt-2 text-lg text-gray-300">Client-side PDF size reduction attempts.</p>
                 </div>
                 <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
-                    &larr; Back to Tools
+                    ← Cosmic Hub
                 </a>
             </div>
         </div>
@@ -74,12 +139,12 @@ html
             <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
         </div>
         <div class="flex flex-col lg:flex-row gap-6">
-            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold text-white mb-4">Compress Your PDF 📄⚙️</h2>
+            <div class="flex-1 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+                <h2 class="text-2xl font-bold text-white mb-4">Optimize Your PDF</h2>
                 <div class="mb-4">
                     <label class="block text-base font-bold text-gray-300 mb-2">Select PDF File</label>
-                    <div id="dropZone" class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
-                        <p class="text-gray-400 text-lg">Drag and drop PDF here or click to select 📂</p>
+                    <div id="dropZone" class="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-gray-700 transition-colors">
+                        <p class="text-gray-400 text-lg">Drag & Drop PDF or Click to Select 📄</p>
                         <input type="file" id="pdfInput" accept="application/pdf" class="hidden">
                     </div>
                     <p id="fileNameDisplay" class="text-sm text-gray-400 mt-2 font-sans font-semibold"></p>
@@ -91,61 +156,61 @@ html
                 </div>
                 <div class="mb-4">
                     <label for="compressionLevelSlider" class="block text-base font-bold text-gray-300">"Re-save Effort" (Symbolic):
-                        <span id="qualityValueDisplay" class="text-pink-400">0.75</span>
+                        <span id="qualityValueDisplay" class="font-orbitron">0.75</span>
                     </label>
                     <input type="range" id="compressionLevelSlider" min="0.1" max="1" step="0.05" value="0.75" class="mt-1 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer custom-range">
                     <p class="text-sm text-gray-400 mt-1 font-sans font-normal">This setting has limited direct impact on deep compression of existing PDF content client-side. It reflects general effort.</p>
                 </div>
                 <div class="mb-4 flex items-center">
                     <input type="checkbox" id="removeMetadataCheckbox" class="h-5 w-5 text-pink-500 focus:ring-pink-400 border-gray-500 rounded bg-gray-700 custom-range">
-                    <label for="removeMetadataCheckbox" class="ml-2 text-gray-300 checkbox-label">Attempt to Remove Metadata (minor size reduction)</label>
+                    <label for="removeMetadataCheckbox" class="ml-2 checkbox-label">Strip Metadata <span class="text-xs font-sans font-normal">(minor size reduction)</span></label>
                 </div>
-                <button id="compressButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Compress PDF</button>
+                <button id="compressButton" class="w-full py-3 px-4 text-lg text-white rounded-md gradient-button font-bold" disabled>Optimize PDF</button>
                 <div id="progressContainer" class="mt-4 hidden">
-                    <p id="progressText" class="text-base text-gray-300 mb-2 font-bold">Compressing PDF...</p>
+                    <p id="progressText" class="text-base text-gray-300 mb-2 font-bold">Optimizing PDF...</p>
                     <div class="progress-bar"><div id="progressBar" class="progress-bar-fill" style="width: 0%"></div></div>
                 </div>
                 <div id="resultSection" class="mt-6 hidden">
-                    <h3 class="text-xl font-bold text-white mb-2">Compression Result:</h3>
+                    <h3 class="text-xl font-bold text-white mb-2">Optimization Result:</h3>
                     <p id="originalSizeText" class="text-sm text-gray-300 font-sans"></p>
                     <p id="compressedSizeText" class="text-sm text-gray-300 font-sans"></p>
                     <p id="sizeReductionText" class="message text-sm font-sans font-bold"></p>
                     <div class="mt-4">
-                        <a id="downloadLink" href="#" class="inline-block py-3 px-6 text-lg text-white rounded-md gradient-button font-bold opacity-50 pointer-events-none">Download Processed PDF 💾</a>
+                        <a id="downloadLink" href="#" class="inline-block py-3 px-6 text-lg text-white rounded-md gradient-button font-bold opacity-50 pointer-events-none">Download Optimized PDF 💾</a>
                     </div>
                 </div>
             </div>
             <aside class="hidden lg:block lg:w-1/3 space-y-6 flex-shrink-0">
-                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg">
+                <div class="sidebar-ad-container bg-gray-800 bg-opacity-30 rounded-lg p-2">
                      <script type="text/javascript">
                         atOptions = { 'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
                     </script>
                     <script type="text/javascript" src="//www.highperformanceformat.com/b76b4ebdfea57e3a5c5eedc01e04fe37/invoke.js"></script>
                 </div>
-                 <div class="bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg text-gray-300 font-sans">
-                    <h3 class="text-xl font-bold text-white mb-3 font-orbitron">About Client-Side PDF Compression</h3>
-                    <p class="text-sm leading-relaxed">This tool attempts to reduce PDF file size directly in your browser using the PDF-Lib library. Client-side PDF compression capabilities are limited compared to server-side tools.</p>
-                    <p class="text-sm leading-relaxed mt-2">The primary action is re-saving the PDF structure. The "Re-save Effort" slider and "Remove Metadata" option might offer minor size reductions for some PDFs. Significant compression, especially for image-heavy documents, typically requires more advanced processing not feasible purely in the browser.</p>
-                    <p class="text-sm leading-relaxed mt-2">Expect modest results. For substantial compression, dedicated desktop or server-based solutions are recommended.</p>
+                 <div class="bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl text-gray-300 font-sans">
+                    <h3 class="text-xl font-bold text-white mb-3 font-orbitron">Understanding Client-Side Optimization</h3>
+                    <p class="text-sm leading-relaxed mt-2">This tool attempts to reduce PDF file size directly in your browser. Client-side PDF optimization capabilities are limited compared to server-side tools.</p>
+                    <p class="text-sm leading-relaxed mt-2">The primary action is re-saving the PDF structure. The "Re-save Effort" slider and "Strip Metadata" option might offer minor size reductions for some PDFs. Significant optimization, especially for image-heavy documents, typically requires more advanced processing not feasible purely in the browser.</p>
+                    <p class="text-sm leading-relaxed mt-2">Expect modest results. For substantial optimization, dedicated desktop or server-based solutions are recommended.</p>
                 </div>
             </aside>
         </div>
-         <section class="mt-10 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold text-white mb-4">How to Use PDF Compressor 📜</h2>
-            <ol class="list-decimal list-inside text-gray-300 space-y-2 font-sans font-normal">
-                <li><strong>Upload PDF:</strong> Drag and drop your PDF file, or click to select. A preview of the first page will appear.</li>
-                <li><strong>Set Options (Optional):</strong> Adjust "Re-save Effort" or check "Attempt to Remove Metadata".</li>
-                <li><strong>Compress:</strong> Click the "Compress PDF" button.</li>
-                <li><strong>Download:</strong> If the processed file is smaller or the same size, a download link will become active. Note that size reduction may be minimal or none for many PDFs.</li>
+         <section class="mt-10 bg-gray-800 bg-opacity-80 p-6 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-bold text-white mb-4">Optimization Guide</h2>
+            <ol class="list-decimal list-inside text-gray-300 space-y-3 font-sans font-normal">
+                <li><span class="list-item-emoji">📤</span><strong>Upload PDF:</strong> Drag and drop your PDF file, or click to select. A preview of the first page will appear.</li>
+                <li><span class="list-item-emoji">⚙️</span><strong>Set Options (Optional):</strong> Adjust "Re-save Effort" or check "Strip Metadata".</li>
+                <li><span class="list-item-emoji">▶️</span><strong>Optimize:</strong> Click the "Optimize PDF" button.</li>
+                <li><span class="list-item-emoji">📥</span><strong>Download:</strong> If the processed file is smaller or the same size, a download link will become active. Note that size reduction may be minimal or none for many PDFs.</li>
             </ol>
         </section>
     </main>
-    <footer class="bg-gray-900 bg-opacity-90 mt-10 py-8">
+    <footer class="bg-gray-900 mt-10 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
             <nav class="mt-4 flex justify-center space-x-4">
-                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
-                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service</a>
             </nav>
         </div>
     </footer>
@@ -176,13 +241,25 @@ html
         if (typeof PDFLib === 'undefined') { console.error("PDF-Lib.js not loaded."); showMessage("Critical error: PDF library failed. Refresh.", true); }
 
         compressionLevelSlider.addEventListener('input', () => qualityValueDisplay.textContent = parseFloat(compressionLevelSlider.value).toFixed(2));
+        
         function showMessage(message, isError = false, duration = 7000) {
             userMessage.textContent = message;
             userMessage.className = 'message mt-2 font-sans font-semibold ';
-            userMessage.classList.add(isError ? 'error-message' : (message.toLowerCase().includes('reduced') || message.toLowerCase().includes('complete') ? 'success-message' : 'info-message'));
+            if (isError) {
+                userMessage.classList.add('error-message');
+            } else if (message.toLowerCase().includes('reduced') || message.toLowerCase().includes('complete') || message.toLowerCase().includes('processed')) {
+                if (message.toLowerCase().includes('reduced') || message.toLowerCase().includes('complete')) {
+                    userMessage.classList.add('success-message');
+                } else { 
+                    userMessage.classList.add('info-message');
+                }
+            } else {
+                userMessage.classList.add('info-message');
+            }
             userMessage.classList.remove('hidden');
             setTimeout(() => userMessage.classList.add('hidden'), duration);
         }
+
         function resetUIState() {
             compressButton.disabled = true;
             downloadLink.style.pointerEvents = 'none'; downloadLink.classList.add('opacity-50'); downloadLink.href = "#";
@@ -243,39 +320,40 @@ html
                     progressBar.style.width = '50%'; progressText.textContent = 'Processing PDF...';
                     if (removeMetadataCheckbox.checked) {
                         pdfDoc.setTitle(''); pdfDoc.setAuthor(''); pdfDoc.setSubject(''); pdfDoc.setKeywords([]);
-                        pdfDoc.setProducer('Cosmic Tools PDF Compressor'); pdfDoc.setCreator('Cosmic Tools');
+                        pdfDoc.setProducer('Cosmic Tools PDF Optimizer'); pdfDoc.setCreator('Cosmic Tools');
                     }
                     const compressedPdfBytes = await pdfDoc.save({ useObjectStreams: true });
                     progressBar.style.width = '90%'; progressText.textContent = 'Finalizing...';
                     const originalSizeBytes = currentFile.size;
                     const compressedSizeBytes = compressedPdfBytes.byteLength;
                     originalSizeText.textContent = `Original Size: ${formatBytes(originalSizeBytes)}`;
-                    compressedSizeText.textContent = `Compressed Size: ${formatBytes(compressedSizeBytes)}`;
+                    compressedSizeText.textContent = `Processed Size: ${formatBytes(compressedSizeBytes)}`;
                     let reductionAchieved = false;
                     if (compressedSizeBytes < originalSizeBytes) {
                         const reduction = originalSizeBytes - compressedSizeBytes; const percentage = ((reduction / originalSizeBytes) * 100).toFixed(2);
                         sizeReductionText.textContent = `Reduced by: ${formatBytes(reduction)} (${percentage}%)`;
-                        sizeReductionText.className = 'message text-sm text-green-400 font-sans font-bold'; reductionAchieved = true;
-                        showMessage(`Compression attempt complete. Size reduced by ${percentage}%.`, false, 5000);
+                        sizeReductionText.className = 'message text-sm font-sans font-bold success-message';
+                        reductionAchieved = true;
+                        showMessage(`Optimization attempt complete. Size reduced by ${percentage}%.`, false, 5000);
                     } else if (compressedSizeBytes > originalSizeBytes) {
                         sizeReductionText.textContent = `Size increased by: ${formatBytes(compressedSizeBytes - originalSizeBytes)}.`;
-                        sizeReductionText.className = 'message text-sm text-yellow-500 font-sans font-bold';
+                        sizeReductionText.className = 'message text-sm font-sans font-bold info-message';
                         showMessage(`Processed. Size slightly increased. Original may have been highly optimized.`, false, 10000);
                     } else {
                         sizeReductionText.textContent = 'No significant size change.';
-                        sizeReductionText.className = 'message text-sm info-message font-sans font-bold';
+                        sizeReductionText.className = 'message text-sm font-sans font-bold info-message';
                         showMessage('Processed. No significant size change achieved.', false, 10000);
                     }
                     const blob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
                     const url = URL.createObjectURL(blob);
-                    downloadLink.href = url; downloadLink.download = `${originalFileName}_compressed.pdf`;
+                    downloadLink.href = url; downloadLink.download = `${originalFileName}_optimized.pdf`;
                     resultSection.classList.remove('hidden');
-                    if (reductionAchieved || compressedSizeBytes <= originalSizeBytes) { // Enable if reduced or same size
+                    if (reductionAchieved || compressedSizeBytes <= originalSizeBytes) { 
                         downloadLink.style.pointerEvents = 'auto'; downloadLink.classList.remove('opacity-50');
                     }
                 } catch (error) {
-                    console.error('Error compressing PDF:', error);
-                    showMessage('Error compressing PDF: ' + error.message, true);
+                    console.error('Error processing PDF:', error);
+                    showMessage('Error processing PDF: ' + error.message, true);
                 } finally {
                     setTimeout(() => {
                         progressContainer.classList.add('hidden'); progressBar.style.width = '0%';
