@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cosmic Background Remover: Instantly remove backgrounds from your images with AI precision. Free and easy to use.">
+    <meta name="keywords" content="background remover, remove bg, image editing, cosmic tools, free tool, transparent background">
+    <meta name="author" content="Cosmic Tools">
+    <meta name="robots" content="index, follow">
+    <title>Cosmic Background Remover ✨</title>
+    <meta property="og:title" content="Cosmic Background Remover">
+    <meta property="og:description" content="Effortlessly remove image backgrounds with our AI-powered tool. Get transparent PNGs in seconds.">
+    <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-bg-remover.jpg">
+    <meta property="og:url" content="https://cosmic-tools-hub.github.io/bg-remover.html">
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1a1a3d, #2c2c54);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Removed main { flex-grow: 1; } as the new page-container will handle it */
+        .page-container {
+            flex-grow: 1;
+            display: flex; /* For overall centering if needed, or specific layout control */
+            justify-content: center; /* Centers the content-with-side-ad block */
+            width: 100%;
+        }
+        .content-with-side-ad {
+            display: flex;
+            flex-direction: row; /* Side by side on larger screens */
+            justify-content: center; /* Center the group if it's narrower than page-container */
+            gap: 2rem; /* Space between main content and side ad */
+            width: 100%;
+            max-width: calc(1024px + 160px + 2rem); /* max-w-4xl (1024px) + ad width + gap */
+            padding: 1.5rem; /* sm:px-6 lg:px-8 equivalent */
+        }
+        main.main-content-area {
+            flex-grow: 1; /* Main content takes available space */
+            max-width: 1024px; /* Tailwind's max-w-4xl */
+        }
+        aside.side-ad-area {
+            width: 160px;
+            flex-shrink: 0; /* Prevent ad from shrinking */
+            min-height: 600px; /* For the ad */
+            display: none; /* Hidden by default, shown on larger screens */
+        }
+        @media (min-width: 1200px) { /* Show side ad on larger screens (adjust breakpoint as needed) */
+            aside.side-ad-area {
+                display: block;
+            }
+        }
+        @media (max-width: 1199px) { /* Stack on smaller screens or hide side ad */
+            .content-with-side-ad {
+                flex-direction: column;
+                align-items: center; /* Center items when stacked */
+            }
+            aside.side-ad-area {
+                /* display: block; */ /* If you want it stacked */
+                margin-top: 2rem; /* Space if stacked */
+                display: none; /* Or keep it hidden on smaller screens if preferred */
+            }
+        }
+
+
+        h1, h2, h3, button, label { font-family: 'Orbitron', sans-serif; }
+        .starry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        .gradient-button {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transition: background 0.3s ease;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+        .gradient-button:hover:not(:disabled) {
+            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+        }
+        .gradient-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .custom-file-input-container {
+            background-color: #2c3e50;
+            border: 1px solid #4a5568;
+            color: #ffffff;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            cursor: pointer;
+            text-align: center;
+        }
+        .custom-file-input-container:hover {
+            border-color: #4ecdc4;
+        }
+        .custom-file-input-container input[type="file"] {
+            display: none;
+        }
+        .status-message {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: bold;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+        .status-error {
+            color: #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+        }
+        .status-success {
+            color: #4ecdc4;
+            background-color: rgba(78, 205, 196, 0.1);
+            border: 1px solid #4ecdc4;
+        }
+        .status-info {
+            color: #e0e0e0;
+            background-color: rgba(224, 224, 224, 0.1);
+            border: 1px solid #777;
+        }
+        .image-display-area {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .image-container {
+            flex: 1;
+            min-width: 280px;
+            text-align: center;
+            border: 2px solid #4a5568;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(44, 62, 80, 0.7);
+        }
+        .image-container h3 {
+            margin-top: 0;
+            font-size: 1.125rem;
+            color: #e0e0e0;
+            margin-bottom: 0.75rem;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 350px;
+            border: 1px solid #6b7280;
+            border-radius: 0.375rem;
+            background-image:
+                linear-gradient(45deg, #374151 25%, transparent 25%),
+                linear-gradient(-45deg, #374151 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #374151 75%),
+                linear-gradient(-45deg, transparent 75%, #374151 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .hidden { display: none; }
+        .top-ad-container { /* Renamed for clarity */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            min-height: 90px;
+        }
+        /* Footer ad container can remain as is, or you can choose not to have an ad there if the side ad is sufficient */
+        .footer-ad-placeholder { /* If you want to keep a placeholder for a potential different footer ad */
+             text-align: center; margin-bottom: 1.5rem; color: #6b7280;
+        }
+    </style>
+</head>
+<body class="font-extrabold">
+    <div class="starry-bg"></div>
+    <header class="bg-opacity-90 bg-gray-900 shadow-lg">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-4xl font-bold text-white">Cosmic Background Remover ✨</h1>
+                    <p class="mt-2 text-lg text-gray-300">Remove image backgrounds with cosmic speed & precision</p>
+                </div>
+                <a href="/" class="text-white text-lg font-bold gradient-button py-2 px-4 rounded-md">
+                    ← Back to Tools
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <div class="content-with-side-ad">
+            <main class="main-content-area"> {/* Changed main tag slightly */}
+                <div class="bg-gray-800 bg-opacity-80 p-6 md:p-8 rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold text-white mb-6 text-center">Upload Your Image 🚀</h2>
+
+                    <label for="imageFile" class="custom-file-input-container block mb-4">
+                        <span id="fileUploadText">Click to Choose File or Drag & Drop</span>
+                        <input type="file" id="imageFile" accept="image/png, image/jpeg, image/webp">
+                    </label>
+
+                    <button id="removeBgButton" class="w-full py-3 px-4 text-lg gradient-button font-bold" disabled>
+                        Remove Background 🌌
+                    </button>
+
+                    <div id="status" class="status-message hidden"></div>
+
+                    <div class="image-display-area mt-8">
+                        <div class="image-container" id="originalContainer" style="display: none;">
+                            <h3>Original Image</h3>
+                            <img id="originalImage" src="#" alt="Original">
+                        </div>
+                        <div class="image-container" id="processedContainer" style="display: none;">
+                            <h3>Processed Image</h3>
+                            <img id="processedImage" src="#" alt="Processed">
+                            <a id="downloadLink" href="#" download="processed_image.png" class="mt-4 gradient-button inline-block hidden">
+                                Download Processed Image ⬇️
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adsterra 728x90 Ad Unit (Top/Below content ad) -->
+                <div class="top-ad-container my-8">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
+                            'format' : 'iframe',
+                            'height' : 90,
+                            'width' : 728,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+                </div>
+            </main>
+
+            <aside class="side-ad-area">
+                <!-- Adsterra 160x600 Ad Unit (Side Ad) -->
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37',
+                        'format' : 'iframe',
+                        'height' : 600,
+                        'width' : 160,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/b76b4ebdfea57e3a5c5eedc01e04fe37/invoke.js"></script>
+            </aside>
+        </div>
+    </div>
+
+
+    <footer class="bg-gray-900 bg-opacity-90 mt-auto py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="footer-ad-placeholder">
+                <!-- You could place a different, smaller footer ad here if desired -->
+                <!-- (Footer Ad Area) -->
+            </div>
+            <p class="text-gray-300 text-lg font-bold">Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
+            <nav class="mt-4 flex justify-center space-x-4">
+                <a href="/privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a>
+                <a href="/terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const S_OBFUSCATED_API_KEY = "ZmZaVjlMakQyblYzUGhrYmVYVTNwRldi"; // ffZV9LjD2nV3PhkbeXU3pFWb
+
+        const imageFileInput = document.getElementById('imageFile');
+        const fileUploadText = document.getElementById('fileUploadText');
+        const removeBgButton = document.getElementById('removeBgButton');
+        const originalImage = document.getElementById('originalImage');
+        const processedImage = document.getElementById('processedImage');
+        const originalContainer = document.getElementById('originalContainer');
+        const processedContainer = document.getElementById('processedContainer');
+        const statusDiv = document.getElementById('status');
+        const downloadLink = document.getElementById('downloadLink');
+
+        let selectedFile = null;
+
+        function getApiKey() {
+            try {
+                return atob(S_OBFUSCATED_API_KEY);
+            } catch (e) {
+                console.error("Error decoding API key:", e);
+                setStatus('Critical error: API key cannot be processed. Tool may not function.', 'error');
+                return null;
+            }
+        }
+
+        imageFileInput.addEventListener('change', (event) => {
+            handleFileSelect(event.target.files);
+        });
+
+        const fileInputContainer = imageFileInput.parentElement;
+        fileInputContainer.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileInputContainer.classList.add('border-teal-400', 'ring-2', 'ring-teal-400');
+        });
+        fileInputContainer.addEventListener('dragleave', () => {
+            fileInputContainer.classList.remove('border-teal-400', 'ring-2', 'ring-teal-400');
+        });
+        fileInputContainer.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileInputContainer.classList.remove('border-teal-400', 'ring-2', 'ring-teal-400');
+            handleFileSelect(event.dataTransfer.files);
+        });
+
+
+        function handleFileSelect(files) {
+            selectedFile = files[0];
+            if (selectedFile) {
+                if (!['image/png', 'image/jpeg', 'image/webp'].includes(selectedFile.type)) {
+                    setStatus('Invalid file type. Please select a PNG, JPG, or WEBP image.', 'error');
+                    selectedFile = null;
+                    removeBgButton.disabled = true;
+                    fileUploadText.textContent = 'Click to Choose File or Drag & Drop';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    originalImage.src = e.target.result;
+                    originalContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(selectedFile);
+                removeBgButton.disabled = false;
+                processedImage.src = "#";
+                processedContainer.style.display = 'none';
+                downloadLink.classList.add('hidden');
+                statusDiv.classList.add('hidden');
+                fileUploadText.textContent = selectedFile.name;
+            } else {
+                removeBgButton.disabled = true;
+                originalContainer.style.display = 'none';
+                fileUploadText.textContent = 'Click to Choose File or Drag & Drop';
+            }
+        }
+
+        removeBgButton.addEventListener('click', async () => {
+            if (!selectedFile) {
+                setStatus('Please select an image file first.', 'error');
+                return;
+            }
+
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                return;
+            }
+
+            setStatus('Processing your cosmic image...', 'info');
+            removeBgButton.disabled = true;
+            processedImage.src = "#";
+            processedContainer.style.display = 'none';
+            downloadLink.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image_file', selectedFile);
+            formData.append('size', 'auto');
+
+            try {
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': apiKey
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const imageBlob = await response.blob();
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    processedImage.src = imageUrl;
+                    processedContainer.style.display = 'block';
+                    downloadLink.href = imageUrl;
+                    const fileNameParts = selectedFile.name.split('.');
+                    fileNameParts.pop(); // Remove original extension
+                    const baseName = fileNameParts.join('.');
+                    downloadLink.download = `${baseName}_cosmic_removed_bg.png`;
+                    downloadLink.classList.remove('hidden');
+                    setStatus('Background removed successfully! Ready to download.', 'success');
+                } else {
+                    let errorMsg = `Error: ${response.status} ${response.statusText}`;
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.errors && errorData.errors.length > 0) {
+                            errorMsg = `API Error: ${errorData.errors[0].title}.`;
+                            if (errorData.errors[0].detail) {
+                                errorMsg += ` ${errorData.errors[0].detail}`;
+                            }
+                        }
+                    } catch (e) {
+                        const textError = await response.text();
+                        console.error('Non-JSON API Error:', textError);
+                        errorMsg = `API Error (${response.status}): ${textError || response.statusText}`;
+                    }
+                    setStatus(errorMsg, 'error');
+                    console.error('API Error Details:', errorMsg);
+                }
+            } catch (error) {
+                setStatus(`Network or other error: ${error.message}. Check console for details.`, 'error');
+                console.error('Fetch Error:', error);
+            } finally {
+                if (selectedFile) removeBgButton.disabled = false;
+            }
+        });
+
+        function setStatus(message, type = 'info') {
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
