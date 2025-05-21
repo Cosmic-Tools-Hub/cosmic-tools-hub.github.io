@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="ppck-ver" content="e8289655289f2f623a830243f85e773c" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Cosmic Tools: Free online tools for image and PDF processing.">
-  <meta name="robots" content="noindex, nofollow" />
-  <title>All Tools - Cosmic Tools 🌠</title>
+  <meta name="description" content="Cosmic Tools: Free online tools for image and PDF processing. Resize, compress, convert images, merge and compress PDFs, and more.">
+  <!-- "search tools" keyword removed -->
+  <meta name="keywords" content="image tools, PDF tools, free online tools, compress images, convert images, merge PDF, compress PDF, image resizer, background remover, image upscaler">
+  <meta name="author" content="Cosmic Tools" />
+  <meta name="robots" content="index, follow" />
+  <title>Cosmic Tools 🌠 - Free Online Image & PDF Tools</title>
   <link rel="icon" type="image/png" href="./favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome link can be removed if search icon was its only use -->
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
         --navy-darkest: #0a192f;
         --navy-dark: #172a45;
         --navy-card: #112240;
-        --navy-input: #1d3454;
+        --navy-card-transparent: rgba(17, 34, 64, 0.85);
+        --navy-input: #1d3454; /* Variable kept as it could be used by modals or other inputs if added later */
         --navy-border: #304a6e;
         --text-primary: #e6f1ff;
         --text-secondary: #ccd6f6;
@@ -23,142 +30,261 @@
         --accent-cyan: #00d4ff;
         --accent-teal-highlight: #64FFDA;
     }
+
     body {
       background: linear-gradient(to bottom, var(--navy-darkest), var(--navy-dark));
       color: var(--text-primary);
       font-family: 'Montserrat', sans-serif;
-      min-height: 100vh; display: flex; flex-direction: column;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    main { flex-grow: 1; }
-    h1, h2, h3, button, .modal-title { font-family: 'Orbitron', sans-serif; color: var(--text-primary); }
-    p, a, .modal-body p { font-family: 'Montserrat', sans-serif; color: var(--text-secondary); }
-    a:hover { color: var(--accent-teal-highlight); }
+    main {
+        flex-grow: 1;
+    }
+    h1, h2, h3, button, .modal-title {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-primary);
+    }
+    /* Removed input::placeholder from this rule as search input is gone */
+    p, a, .modal-body p {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--text-secondary);
+    }
+    a:hover {
+        color: var(--accent-teal-highlight);
+    }
+
     .starry-bg {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
-      opacity: 0.2; z-index: -1;
+      opacity: 0.2;
+      z-index: -1;
     }
-    header, footer { background-color: var(--navy-darkest) !important; }
-    header p, footer p, footer a { color: var(--text-secondary) !important; }
-    footer a:hover { color: var(--accent-teal-highlight) !important; }
+
+    header, footer {
+        background-color: var(--navy-darkest) !important;
+    }
+    header p, footer p, footer a {
+        color: var(--text-secondary) !important;
+    }
+     footer a:hover {
+        color: var(--accent-teal-highlight) !important;
+    }
+
     .gradient-button {
       background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
-      transition: background 0.3s ease, transform 0.2s ease; color: var(--text-primary) !important;
-      font-weight: bold; padding: 0.75rem 1rem; border-radius: 0.375rem;
-      display: inline-block; text-decoration: none;
+      transition: background 0.3s ease, transform 0.2s ease;
+      color: var(--text-primary) !important;
+      font-weight: bold;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      display: inline-block;
+      text-decoration: none;
     }
     .gradient-button:hover {
       background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
       transform: translateY(-2px) scale(1.03);
     }
+
     .tool-card {
       background-color: var(--navy-card) !important;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      border: 1px solid var(--navy-border); border-radius: 0.5rem; padding: 1.5rem;
-      display: flex; flex-direction: column; justify-content: space-between; height: 100%;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--navy-border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
     }
     .tool-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2), 0 0 15px rgba(249, 42, 130, 0.15);
       border-color: var(--accent-teal-highlight);
     }
-    .tool-card h3 { margin-bottom: 1rem; font-size: 1.5rem; }
-    .tool-card p { color: var(--text-secondary) !important; margin-bottom: 1rem; flex-grow: 1; font-size: 1rem; }
+    .tool-card h3 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+    .tool-card p {
+        color: var(--text-secondary) !important;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+        font-size: 1rem;
+    }
+    .ad-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+        min-height: 90px;
+    }
 
-    /* CSS related to search results highlighting REMOVED */
+    /* Search Bar Styles REMOVED */
 
     /* Modal Styles (Unchanged) */
-    .modal-backdrop{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:40;padding:1rem}
-    .modal{background-color:var(--navy-card);padding:2rem;border-radius:.5rem;border:1px solid var(--navy-border);box-shadow:0 10px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04),0 0 20px rgba(0,212,255,.15),0 0 15px rgba(249,42,130,.1);max-width:600px;width:100%;position:relative;z-index:50;max-height:80vh;overflow-y:auto}
-    .modal-close-button{position:absolute;top:.75rem;right:1rem;font-size:2rem;font-weight:700;color:var(--text-muted);cursor:pointer;line-height:1;font-family:Arial,sans-serif}
-    .modal-close-button:hover{color:var(--accent-pink)}
-    .modal-title{font-size:1.75rem;margin-bottom:1rem}
-    .modal-body p{margin-bottom:.75rem;line-height:1.6}
-    .modal-body a{color:var(--accent-cyan);text-decoration:underline}
-    .modal-body a:hover{color:var(--accent-teal-highlight)}
+    .modal-backdrop {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); display: none;
+        justify-content: center; align-items: center; z-index: 40; padding: 1rem;
+    }
+    .modal {
+        background-color: var(--navy-card); padding: 2rem; border-radius: 0.5rem;
+        border: 1px solid var(--navy-border);
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04),
+                    0 0 20px rgba(0, 212, 255, 0.15), 0 0 15px rgba(249, 42, 130, 0.1);
+        max-width: 600px; width: 100%; position: relative; z-index: 50;
+        max-height: 80vh; overflow-y: auto;
+    }
+    .modal-close-button {
+        position: absolute; top: 0.75rem; right: 1rem; font-size: 2rem; font-weight: bold;
+        color: var(--text-muted); cursor: pointer; line-height: 1; font-family: 'Arial', sans-serif;
+    }
+    .modal-close-button:hover { color: var(--accent-pink); }
+    .modal-title { font-size: 1.75rem; margin-bottom: 1rem; }
+    .modal-body p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .modal-body a { color: var(--accent-cyan); text-decoration: underline; }
+    .modal-body a:hover { color: var(--accent-teal-highlight); }
+
   </style>
 </head>
 <body class="font-extrabold">
   <div class="starry-bg"></div>
   <header class="shadow-lg">
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div class="text-center sm:text-left">
-        <a href="./index.html" class="text-4xl font-bold text-white hover:text-accent-teal-highlight">Cosmic Tools 🌠</a>
+      <!-- Original flex container that held title & search bar is removed, title block stands alone -->
+      <div class="text-center sm:text-left"> <!-- Adjusted for standalone title alignment -->
+        <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠</h1>
         <p class="mt-2 text-lg text-gray-300">Free Online Image & PDF Processing</p>
       </div>
-      <!-- Search Form Removed -->
+      <!-- Search Form and its container div completely removed -->
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
-    <!-- Search results info elements removed -->
-
-    <div id="allToolsContainer">
-        <!-- data-attributes for search REMOVED from tool cards -->
-        <!-- Image Tools Section -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-white mb-6">🖼️ Image Tools</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">Image Resizer & Optimizer 📏</h3>
-                    <p class="text-gray-300">Resize images easily and optimize for the web.</p>
-                </div>
-                <a href="./image-resizer.html" class="gradient-button mt-4">Try Image Resizer</a>
-              </div>
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">Image Optimizer (Compressor) ✨</h3>
-                    <p class="text-gray-300">Compress image files while preserving quality.</p>
-                </div>
-                <a href="./image-compressor.html" class="gradient-button mt-4">Try Image Optimizer</a>
-              </div>
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">Image Format Converter 🔄</h3>
-                    <p class="text-gray-300">Convert images between various formats.</p>
-                </div>
-                <a href="./image-converter.html" class="gradient-button mt-4">Try Format Converter</a>
-              </div>
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">Image Upscaler 🔎</h3>
-                    <p class="text-gray-300">Increase image resolution client-side.</p>
-                </div>
-                <a href="./image-upscaler.html" class="gradient-button mt-4">Try Image Upscaler</a>
-              </div>
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">Background Remover 🪄</h3>
-                    <p class="text-gray-300">Remove image backgrounds automatically using AI.</p>
-                </div>
-                <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
-              </div>
-            </div>
-        </section>
-
-        <!-- PDF Tools Section -->
-        <section>
-            <h2 class="text-3xl font-bold text-white mb-6">📄 PDF Tools</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">PDF Merger ✨</h3>
-                    <p class="text-gray-300">Merge multiple PDF files into one easily.</p>
-                </div>
-                <a href="./pdf-merger.html" class="gradient-button mt-4">Try PDF Merger</a>
-              </div>
-              <div class="tool-card">
-                <div>
-                    <h3 class="text-white">PDF Optimizer (Compressor) ⚙️</h3>
-                    <p class="text-gray-300">Attempt to compress PDFs to reduce file size.</p>
-                </div>
-                <a href="./pdf-compressor.html" class="gradient-button mt-4">Try PDF Optimizer</a>
-              </div>
-            </div>
-        </section>
+    <!-- Top Ad - Script is PRESENT -->
+    <div class="ad-container mb-6">
+      <script type="text/javascript">
+        atOptions = {
+          'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
     </div>
-    <!-- noResultsMessage div removed -->
+
+    <!-- Popular Tools Section (Content is UNCHANGED from your original) -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-white mb-6">🌟 Popular Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Background Remover 🪄</h3>
+                <p class="text-gray-300">Remove image backgrounds automatically using AI.</p>
+            </div>
+            <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Format Converter 🔄</h3>
+                <p class="text-gray-300">Convert images between various formats.</p>
+            </div>
+            <a href="./image-converter.html" class="gradient-button mt-4">Try Format Converter</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">PDF Merger ✨</h3>
+                <p class="text-gray-300">Merge multiple PDF files into one easily.</p>
+            </div>
+            <a href="./pdf-merger.html" class="gradient-button mt-4">Try PDF Merger</a>
+          </div>
+        </div>
+    </section>
+
+    <!-- Image Tools Section (Content is UNCHANGED from your original) -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-white mb-6">🖼️ Image Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Resizer & Optimizer 📏</h3>
+                <p class="text-gray-300">Resize images easily and optimize for the web.</p>
+            </div>
+            <a href="./image-resizer.html" class="gradient-button mt-4">Try Image Resizer</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Optimizer (Compressor) ✨</h3>
+                <p class="text-gray-300">Compress image files while preserving quality.</p>
+            </div>
+            <a href="./image-compressor.html" class="gradient-button mt-4">Try Image Optimizer</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Format Converter 🔄</h3>
+                <p class="text-gray-300">Convert images between various formats.</p>
+            </div>
+            <a href="./image-converter.html" class="gradient-button mt-4">Try Format Converter</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Upscaler 🔎</h3>
+                <p class="text-gray-300">Increase image resolution client-side.</p>
+            </div>
+            <a href="./image-upscaler.html" class="gradient-button mt-4">Try Image Upscaler</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Background Remover 🪄</h3>
+                <p class="text-gray-300">Remove image backgrounds automatically using AI.</p>
+            </div>
+            <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
+          </div>
+        </div>
+    </section>
+
+    <!-- PDF Tools Section (Content is UNCHANGED from your original) -->
+    <section>
+        <h2 class="text-3xl font-bold text-white mb-6">📄 PDF Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">PDF Merger ✨</h3>
+                <p class="text-gray-300">Merge multiple PDF files into one easily.</p>
+            </div>
+            <a href="./pdf-merger.html" class="gradient-button mt-4">Try PDF Merger</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">PDF Optimizer (Compressor) ⚙️</h3>
+                <p class="text-gray-300">Attempt to compress PDFs to reduce file size.</p>
+            </div>
+            <a href="./pdf-compressor.html" class="gradient-button mt-4">Try PDF Optimizer</a>
+          </div>
+        </div>
+    </section>
+
+    <!-- Bottom Ad - Script is PRESENT -->
+    <div class="ad-container my-8">
+      <script type="text/javascript">
+        atOptions = {
+          'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+    </div>
   </main>
 
   <footer class="mt-auto py-8">
@@ -173,8 +299,9 @@
     </div>
   </footer>
 
-  <!-- Modal Backdrop (Full modal content preserved as in index.html) -->
+  <!-- Modal Backdrop -->
   <div id="modalBackdrop" class="modal-backdrop">
+    <!-- About Us Modal (Full content preserved) -->
     <div id="aboutModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="aboutModal">×</span>
         <h3 class="modal-title">About Us ℹ️</h3>
@@ -184,6 +311,7 @@
             <p>Explore the cosmos of digital convenience with Cosmic Tools!</p>
         </div>
     </div>
+    <!-- Contact Us Modal (Full content preserved) -->
     <div id="contactModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="contactModal">×</span>
         <h3 class="modal-title">Contact Us 📧</h3>
@@ -193,6 +321,7 @@
             <p>We aim to respond to all inquiries within 2-3 business days.</p>
         </div>
     </div>
+    <!-- Privacy Policy Modal (Full content preserved) -->
     <div id="privacyModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="privacyModal">×</span>
         <h3 class="modal-title">Privacy Policy 📜</h3>
@@ -207,6 +336,7 @@
             <p><strong>Contact Us:</strong> If you have any questions about this Privacy Policy, please contact us via the details provided in our "Contact Us" section.</p>
         </div>
     </div>
+    <!-- Terms of Service Modal (Full content preserved) -->
     <div id="termsModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="termsModal">×</span>
         <h3 class="modal-title">Terms of Service 📝</h3>
@@ -233,16 +363,13 @@
 
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
     const dynamicDateElements = document.querySelectorAll('.dynamicDate');
     const today = new Date();
     const formattedDate = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`;
-    dynamicDateElements.forEach(el => {
-        if (el.closest('#privacyModal') || el.closest('#termsModal')) { // Ensure only relevant modals are updated
-            el.textContent = formattedDate;
-        }
-    });
+    dynamicDateElements.forEach(el => el.textContent = formattedDate);
 
-    // --- All Search Highlighting Logic and related variables REMOVED ---
+    // Search Bar JavaScript Functionality and related variables COMPLETELY REMOVED
 
     // Modal Logic (Unchanged)
     const modalBackdrop = document.getElementById('modalBackdrop');
@@ -280,9 +407,17 @@
         }
     });
     const closeButtons = document.querySelectorAll('.modal-close-button');
-    closeButtons.forEach(button => button.addEventListener('click', () => { closeModal(); }));
-    if (modalBackdrop) modalBackdrop.addEventListener('click', (event) => { if (event.target === modalBackdrop) closeModal(); });
-    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && activeModal) closeModal(); });
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => { closeModal(); });
+    });
+    if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', (event) => {
+            if (event.target === modalBackdrop) { closeModal(); }
+        });
+    }
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && activeModal) { closeModal(); }
+    });
   </script>
 </body>
 </html>
