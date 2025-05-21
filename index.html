@@ -97,7 +97,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 100%; /* Ensure cards in a row have same height */
+      height: 100%;
     }
     .tool-card:hover {
       transform: translateY(-6px);
@@ -106,61 +106,40 @@
     }
     .tool-card h3 {
         margin-bottom: 1rem;
-        font-size: 1.5rem; /* Tailwind's text-2xl is 1.5rem */
+        font-size: 1.5rem;
     }
     .tool-card p {
         color: var(--text-secondary) !important;
         margin-bottom: 1rem;
         flex-grow: 1;
-        font-size: 1rem; /* Tailwind's text-base */
+        font-size: 1rem;
     }
     .ad-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        /* background-color: var(--navy-dark); Optional: to better visualize ad space */
         padding: 10px 0;
-        min-height: 90px; /* Default banner height, adjust if needed */
+        min-height: 90px; /* Default banner height, adjust if needed for this ad type */
     }
 
     /* Search Bar Styles */
-    .search-form {
-        display: flex;
-        align-items: center;
-        max-width: 500px; /* Adjust as needed */
-        margin-top: 1rem; /* Space from title */
-    }
+    .search-form { display: flex; align-items: center; max-width: 500px; margin-top: 1rem; }
     .search-input {
-        flex-grow: 1;
-        padding: 0.75rem 1rem; /* Tailwind py-3 px-4 */
-        background-color: var(--navy-input);
-        color: var(--text-primary);
-        border: 1px solid var(--navy-border);
-        border-radius: 0.375rem 0 0 0.375rem; /* rounded-l-md */
-        font-size: 1rem;
+        flex-grow: 1; padding: 0.75rem 1rem; background-color: var(--navy-input);
+        color: var(--text-primary); border: 1px solid var(--navy-border);
+        border-radius: 0.375rem 0 0 0.375rem; font-size: 1rem;
     }
     .search-input:focus {
-        outline: none;
-        border-color: var(--accent-cyan);
+        outline: none; border-color: var(--accent-cyan);
         box-shadow: 0 0 0 2px var(--accent-cyan_transparent, rgba(0, 212, 255, 0.3));
     }
     .search-button {
-        padding: 0.75rem 1rem; /* Tailwind py-3 px-4 */
-        background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
-        color: var(--text-primary);
-        border: 1px solid var(--accent-pink);
-        border-left: none;
-        border-radius: 0 0.375rem 0.375rem 0; /* rounded-r-md */
-        cursor: pointer;
-        transition: background 0.3s ease;
+        padding: 0.75rem 1rem; background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+        color: var(--text-primary); border: 1px solid var(--accent-pink); border-left: none;
+        border-radius: 0 0.375rem 0.375rem 0; cursor: pointer; transition: background 0.3s ease;
     }
-    .search-button:hover {
-      background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
-    }
-    .search-button i {
-        font-size: 1.1rem;
-    }
-
+    .search-button:hover { background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink)); }
+    .search-button i { font-size: 1.1rem; }
 
     /* Modal Styles */
     .modal-backdrop {
@@ -208,42 +187,24 @@
   </header>
 
   <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
-    <!-- Top Ad - REPLACE WITH YOUR ADSTERRA CODE -->
+    <!-- Top Ad -->
     <div class="ad-container mb-6">
-      <!--
-        PASTE YOUR ADSTERRA AD CODE FOR THE TOP BANNER (e.g., 728x90) HERE.
-        It will likely be a <script> tag provided by Adsterra.
-        Make sure to remove this comment block and the example script below
-        once you've pasted your actual code.
-
-        Example Adsterra Banner Script Structure (REPLACE THIS ENTIRE SCRIPT WITH YOURS):
-      -->
       <script type="text/javascript">
-          atOptions = {
-              'key' : 'YOUR_ADSTERRA_PLACEMENT_KEY_FOR_TOP_AD', // <-- REPLACE THIS with your actual key from Adsterra
-              'format' : 'iframe', // Or other format as specified by Adsterra
-              'height' : 90,       // Adjust if your ad unit has different dimensions
-              'width' : 728,       // Adjust if your ad unit has different dimensions
-              'params' : {}
-          };
-          // The line below might be slightly different based on Adsterra's current script generation.
-          // ALWAYS use the exact script provided in your Adsterra dashboard.
-          // document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://ADSTERRA_CDN_DOMAIN.com/' + atOptions.key + '/invoke.js"></scr' + 'ipt>');
+        atOptions = {
+          'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
       </script>
-      <!-- If your Adsterra code is just a single script tag that writes an iframe,
-           you might not need the `atOptions` part directly in your HTML,
-           but Adsterra will provide the full snippet.
-           Some Adsterra ads might just be a single line like:
-           <script async="async" data-cfasync="false" src="//ADSTERRA_CDN_DOMAIN.com/PLACEMENT_ID/invoke.js"></script>
-           <div id="container-PLACEMENT_ID"></div>
-      -->
+      <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
     </div>
 
     <!-- Popular Tools Section -->
     <section class="mb-12">
         <h2 class="text-3xl font-bold text-white mb-6">🌟 Popular Tools</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Image Background Remover -->
           <div class="tool-card">
             <div>
                 <h3 class="text-white">Background Remover 🪄</h3>
@@ -251,8 +212,6 @@
             </div>
             <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
           </div>
-
-          <!-- Image Format Converter -->
           <div class="tool-card">
             <div>
                 <h3 class="text-white">Image Format Converter 🔄</h3>
@@ -260,8 +219,6 @@
             </div>
             <a href="./image-converter.html" class="gradient-button mt-4">Try Format Converter</a>
           </div>
-
-          <!-- PDF Merger -->
           <div class="tool-card">
             <div>
                 <h3 class="text-white">PDF Merger ✨</h3>
@@ -335,35 +292,18 @@
         </div>
     </section>
 
-    <!-- Bottom Ad - REPLACE WITH YOUR ADSTERRA CODE -->
+    <!-- Bottom Ad -->
     <div class="ad-container my-8">
-      <!--
-        PASTE YOUR ADSTERRA AD CODE FOR THE BOTTOM BANNER (e.g., 728x90) HERE.
-        It will likely be a <script> tag provided by Adsterra.
-        Make sure to remove this comment block and the example script below
-        once you've pasted your actual code.
-
-        Example Adsterra Banner Script Structure (REPLACE THIS ENTIRE SCRIPT WITH YOURS):
-      -->
       <script type="text/javascript">
-          atOptions = {
-              'key' : 'YOUR_ADSTERRA_PLACEMENT_KEY_FOR_BOTTOM_AD', // <-- REPLACE THIS with your actual key from Adsterra
-              'format' : 'iframe', // Or other format as specified by Adsterra
-              'height' : 90,       // Adjust if your ad unit has different dimensions
-              'width' : 728,       // Adjust if your ad unit has different dimensions
-              'params' : {}
-          };
-          // The line below might be slightly different based on Adsterra's current script generation.
-          // ALWAYS use the exact script provided in your Adsterra dashboard.
-          // document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://ADSTERRA_CDN_DOMAIN.com/' + atOptions.key + '/invoke.js"></scr' + 'ipt>');
+        atOptions = {
+          'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
+          'format' : 'iframe',
+          'height' : 90,
+          'width' : 728,
+          'params' : {}
+        };
       </script>
-      <!-- If your Adsterra code is just a single script tag that writes an iframe,
-           you might not need the `atOptions` part directly in your HTML,
-           but Adsterra will provide the full snippet.
-           Some Adsterra ads might just be a single line like:
-           <script async="async" data-cfasync="false" src="//ADSTERRA_CDN_DOMAIN.com/PLACEMENT_ID/invoke.js"></script>
-           <div id="container-PLACEMENT_ID"></div>
-      -->
+      <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
     </div>
   </main>
 
@@ -381,7 +321,6 @@
 
   <!-- Modal Backdrop -->
   <div id="modalBackdrop" class="modal-backdrop">
-    <!-- About Us Modal -->
     <div id="aboutModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="aboutModal">×</span>
         <h3 class="modal-title">About Us ℹ️</h3>
@@ -407,7 +346,7 @@
             <p><strong>Last Updated: <span class="dynamicDate"></span></strong></p>
             <p>Your privacy is important to us at Cosmic Tools. This Privacy Policy outlines how we handle your information when you use our services.</p>
             <p><strong>Information We Collect:</strong> For most of our tools, processing is done client-side in your browser. This means your files are NOT uploaded to our servers for these tools (e.g., image resizer, image converter, client-side PDF tools). For tools requiring server-side processing (like AI Background Remover), files are temporarily uploaded, processed, and then deleted from our servers shortly after processing is complete or the session ends. We do not store your processed files long-term for such services.</p>
-            <p><strong>Cookies and Tracking:</strong> We may use cookies for essential site functionality and anonymous analytics to improve our services. Third-party advertisers (like Adsterra) may also use cookies to serve ads based on a user's prior visits to this website or other websites. You can often manage your ad preferences through the advertising network's own settings or opt-out mechanisms.</p>
+            <p><strong>Cookies and Tracking:</strong> We may use cookies for essential site functionality and anonymous analytics to improve our services. Third-party advertisers (like those using `highperformanceformat.com`) may also use cookies to serve ads based on a user's prior visits to this website or other websites. You can often manage your ad preferences through the advertising network's own settings or industry opt-out pages.</p>
             <p><strong>Data Security:</strong> We implement reasonable security measures to protect information, but no internet transmission is 100% secure.</p>
             <p><strong>Third-Party Links:</strong> Our site may contain links to other websites. We are not responsible for their privacy practices.</p>
             <p><strong>Changes to This Policy:</strong> We may update this policy. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
@@ -438,7 +377,6 @@
     </div>
   </div>
 
-
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
@@ -453,7 +391,7 @@
 
     if (searchForm && searchInput) {
         searchForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
             const query = searchInput.value.trim();
             if (query) {
                 window.location.href = `./search.html?query=${encodeURIComponent(query)}`;
