@@ -5,18 +5,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Cosmic Tools: Free online tools for image and PDF processing. Resize, compress, convert images, merge and compress PDFs, and more.">
-  <meta name="keywords" content="image tools, PDF tools, free online tools, compress images, convert images, merge PDF, compress PDF, image resizer, background remover, image upscaler">
+  <meta name="keywords" content="image tools, PDF tools, free online tools, compress images, convert images, merge PDF, compress PDF, image resizer, background remover, image upscaler, search tools">
   <meta name="author" content="Cosmic Tools" />
   <meta name="robots" content="index, follow" />
   <title>Cosmic Tools 🌠 - Free Online Image & PDF Tools</title>
-  <link rel="icon" type="image/png" href="./favicon.png" /> <!-- Assuming favicon is in the same directory or root -->
+  <link rel="icon" type="image/png" href="./favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- For search icon -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
         --navy-darkest: #0a192f;
         --navy-dark: #172a45;
-        --navy-card: #112240; /* Slightly different from input for cards */
+        --navy-card: #112240;
         --navy-card-transparent: rgba(17, 34, 64, 0.85);
         --navy-input: #1d3454;
         --navy-border: #304a6e;
@@ -39,11 +40,11 @@
     main {
         flex-grow: 1;
     }
-    h1, h2, h3, button {
+    h1, h2, h3, button, .modal-title {
       font-family: 'Orbitron', sans-serif;
       color: var(--text-primary);
     }
-    p, a {
+    p, a, .modal-body p, input::placeholder {
         font-family: 'Montserrat', sans-serif;
         color: var(--text-secondary);
     }
@@ -52,144 +53,261 @@
     }
 
     .starry-bg {
-      position: fixed; /* Changed to fixed to cover viewport */
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
-      opacity: 0.2; /* Adjusted for darker theme */
+      opacity: 0.2;
       z-index: -1;
     }
 
-    /* Header and Footer Styles */
     header, footer {
-        background-color: var(--navy-darkest) !important; /* Match individual tool pages */
-        /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); Tailwind shadow-lg */
+        background-color: var(--navy-darkest) !important;
     }
     header p, footer p, footer a {
         color: var(--text-secondary) !important;
     }
      footer a:hover {
-        color: var(--text-primary) !important;
+        color: var(--accent-teal-highlight) !important;
     }
-
 
     .gradient-button {
       background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
       transition: background 0.3s ease, transform 0.2s ease;
-      color: var(--text-primary) !important; /* Ensure button text is primary */
-      font-weight: bold; /* Tailwind's font-bold */
-      padding: 0.75rem 1rem; /* Tailwind's px-4 py-3 */
-      border-radius: 0.375rem; /* Tailwind's rounded-md */
-      display: inline-block; /* For proper padding and centering */
-      text-decoration: none; /* Remove underline from <a> tags styled as buttons */
+      color: var(--text-primary) !important;
+      font-weight: bold;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      display: inline-block;
+      text-decoration: none;
     }
     .gradient-button:hover {
       background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
-      transform: translateY(-2px) scale(1.03); /* Subtle lift and scale */
+      transform: translateY(-2px) scale(1.03);
     }
 
     .tool-card {
-      background-color: var(--navy-card) !important; /* Tailwind's bg-gray-800 */
+      background-color: var(--navy-card) !important;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 1px solid var(--navy-border); /* Subtle border */
-      border-radius: 0.5rem; /* Tailwind's rounded-lg */
-      padding: 1.5rem; /* Tailwind's p-6 */
-      /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); Tailwind shadow-lg */
+      border: 1px solid var(--navy-border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      justify-content: space-between; /* Pushes button to bottom */
+      justify-content: space-between;
+      height: 100%; /* Ensure cards in a row have same height */
     }
     .tool-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2), 0 0 15px rgba(249, 42, 130, 0.15); /* Themed glow */
+      box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2), 0 0 15px rgba(249, 42, 130, 0.15);
       border-color: var(--accent-teal-highlight);
     }
     .tool-card h3 {
-        margin-bottom: 1rem; /* Tailwind's mb-4 */
+        margin-bottom: 1rem;
+        font-size: 1.5rem; /* Tailwind's text-2xl is 1.5rem */
     }
     .tool-card p {
-        color: var(--text-secondary) !important; /* Tailwind's text-gray-300 */
-        margin-bottom: 1rem; /* Tailwind's mb-4 */
-        flex-grow: 1; /* Allows paragraph to take space before button */
+        color: var(--text-secondary) !important;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+        font-size: 1rem; /* Tailwind's text-base */
     }
-    .ad-container { /* General class for ad centering */
+    .ad-container {
         display: flex;
         justify-content: center;
         align-items: center;
+        /* background-color: var(--navy-dark); Optional: to better visualize ad space */
+        padding: 10px 0;
+        min-height: 90px; /* Default banner height, adjust if needed */
     }
+
+    /* Search Bar Styles */
+    .search-form {
+        display: flex;
+        align-items: center;
+        max-width: 500px; /* Adjust as needed */
+        margin-top: 1rem; /* Space from title */
+    }
+    .search-input {
+        flex-grow: 1;
+        padding: 0.75rem 1rem; /* Tailwind py-3 px-4 */
+        background-color: var(--navy-input);
+        color: var(--text-primary);
+        border: 1px solid var(--navy-border);
+        border-radius: 0.375rem 0 0 0.375rem; /* rounded-l-md */
+        font-size: 1rem;
+    }
+    .search-input:focus {
+        outline: none;
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 0 2px var(--accent-cyan_transparent, rgba(0, 212, 255, 0.3));
+    }
+    .search-button {
+        padding: 0.75rem 1rem; /* Tailwind py-3 px-4 */
+        background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+        color: var(--text-primary);
+        border: 1px solid var(--accent-pink);
+        border-left: none;
+        border-radius: 0 0.375rem 0.375rem 0; /* rounded-r-md */
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .search-button:hover {
+      background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
+    }
+    .search-button i {
+        font-size: 1.1rem;
+    }
+
+
+    /* Modal Styles */
+    .modal-backdrop {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); display: none;
+        justify-content: center; align-items: center; z-index: 40; padding: 1rem;
+    }
+    .modal {
+        background-color: var(--navy-card); padding: 2rem; border-radius: 0.5rem;
+        border: 1px solid var(--navy-border);
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04),
+                    0 0 20px rgba(0, 212, 255, 0.15), 0 0 15px rgba(249, 42, 130, 0.1);
+        max-width: 600px; width: 100%; position: relative; z-index: 50;
+        max-height: 80vh; overflow-y: auto;
+    }
+    .modal-close-button {
+        position: absolute; top: 0.75rem; right: 1rem; font-size: 2rem; font-weight: bold;
+        color: var(--text-muted); cursor: pointer; line-height: 1; font-family: 'Arial', sans-serif;
+    }
+    .modal-close-button:hover { color: var(--accent-pink); }
+    .modal-title { font-size: 1.75rem; margin-bottom: 1rem; }
+    .modal-body p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .modal-body a { color: var(--accent-cyan); text-decoration: underline; }
+    .modal-body a:hover { color: var(--accent-teal-highlight); }
+
   </style>
 </head>
-<body class="font-extrabold"> <!-- Tailwind's font-extrabold -->
+<body class="font-extrabold">
   <div class="starry-bg"></div>
-  <header class="shadow-lg"> <!-- Removed bg-opacity-90 for solid color -->
+  <header class="shadow-lg">
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠</h1>
-      <p class="mt-2 text-lg text-gray-300">Free Online Image & PDF Processing</p>
+      <div class="flex flex-col sm:flex-row justify-between sm:items-center">
+          <div>
+            <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠</h1>
+            <p class="mt-2 text-lg text-gray-300">Free Online Image & PDF Processing</p>
+          </div>
+          <form id="searchForm" class="search-form mt-4 sm:mt-0 sm:ml-4">
+            <input type="search" id="searchInput" class="search-input" placeholder="Search tools (e.g., resize, merge pdf)..." aria-label="Search tools">
+            <button type="submit" class="search-button" aria-label="Search">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+      </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
-    <!-- Top Ad -->
-    <div class="ad-container mb-6"> <!-- Tailwind's mb-6 -->
+    <!-- Top Ad - REPLACE WITH YOUR ADSTERRA CODE -->
+    <div class="ad-container mb-6">
+      <!--
+        PASTE YOUR ADSTERRA AD CODE FOR THE TOP BANNER (e.g., 728x90) HERE.
+        It will likely be a <script> tag provided by Adsterra.
+        Make sure to remove this comment block and the example script below
+        once you've pasted your actual code.
+
+        Example Adsterra Banner Script Structure (REPLACE THIS ENTIRE SCRIPT WITH YOURS):
+      -->
       <script type="text/javascript">
-        atOptions = {
-          'key': '1b4ab7bf9b345f519520b8920fe6ffec',
-          'format': 'iframe',
-          'height': 90,
-          'width': 728,
-          'params': {}
-        };
+          atOptions = {
+              'key' : 'YOUR_ADSTERRA_PLACEMENT_KEY_FOR_TOP_AD', // <-- REPLACE THIS with your actual key from Adsterra
+              'format' : 'iframe', // Or other format as specified by Adsterra
+              'height' : 90,       // Adjust if your ad unit has different dimensions
+              'width' : 728,       // Adjust if your ad unit has different dimensions
+              'params' : {}
+          };
+          // The line below might be slightly different based on Adsterra's current script generation.
+          // ALWAYS use the exact script provided in your Adsterra dashboard.
+          // document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://ADSTERRA_CDN_DOMAIN.com/' + atOptions.key + '/invoke.js"></scr' + 'ipt>');
       </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+      <!-- If your Adsterra code is just a single script tag that writes an iframe,
+           you might not need the `atOptions` part directly in your HTML,
+           but Adsterra will provide the full snippet.
+           Some Adsterra ads might just be a single line like:
+           <script async="async" data-cfasync="false" src="//ADSTERRA_CDN_DOMAIN.com/PLACEMENT_ID/invoke.js"></script>
+           <div id="container-PLACEMENT_ID"></div>
+      -->
     </div>
 
-    <!-- Image Tools Section -->
-    <section class="mb-12"> <!-- Added margin-bottom for spacing -->
-        <h2 class="text-3xl font-bold text-white mb-6">🖼️ Image Tools</h2> <!-- Tailwind's mb-4, increased to mb-6 for more space -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> <!-- Adjusted for up to 3 columns on large screens -->
-          <!-- Image Resizer -->
+    <!-- Popular Tools Section -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-white mb-6">🌟 Popular Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Image Background Remover -->
           <div class="tool-card">
             <div>
-                <h3 class="text-2xl font-bold text-white">Image Resizer & Optimizer 📏</h3>
-                <p class="text-base text-gray-300">Resize images easily and optimize for the web.</p>
+                <h3 class="text-white">Background Remover 🪄</h3>
+                <p class="text-gray-300">Remove image backgrounds automatically using AI.</p>
             </div>
-            <a href="./image-resizer.html" class="gradient-button mt-4">Try Image Resizer</a>
-          </div>
-
-          <!-- Image Compressor -->
-          <div class="tool-card">
-            <div>
-                <h3 class="text-2xl font-bold text-white">Image Optimizer (Compressor) ✨</h3>
-                <p class="text-base text-gray-300">Compress image files while preserving quality.</p>
-            </div>
-            <a href="./image-compressor.html" class="gradient-button mt-4">Try Image Optimizer</a>
+            <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
           </div>
 
           <!-- Image Format Converter -->
           <div class="tool-card">
             <div>
-                <h3 class="text-2xl font-bold text-white">Image Format Converter 🔄</h3>
-                <p class="text-base text-gray-300">Convert images between various formats.</p>
+                <h3 class="text-white">Image Format Converter 🔄</h3>
+                <p class="text-gray-300">Convert images between various formats.</p>
             </div>
             <a href="./image-converter.html" class="gradient-button mt-4">Try Format Converter</a>
           </div>
 
-          <!-- Image Upscaler -->
+          <!-- PDF Merger -->
           <div class="tool-card">
             <div>
-                <h3 class="text-2xl font-bold text-white">Image Upscaler 🔎</h3>
-                <p class="text-base text-gray-300">Increase image resolution client-side.</p>
+                <h3 class="text-white">PDF Merger ✨</h3>
+                <p class="text-gray-300">Merge multiple PDF files into one easily.</p>
+            </div>
+            <a href="./pdf-merger.html" class="gradient-button mt-4">Try PDF Merger</a>
+          </div>
+        </div>
+    </section>
+
+    <!-- Image Tools Section -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-white mb-6">🖼️ Image Tools</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Resizer & Optimizer 📏</h3>
+                <p class="text-gray-300">Resize images easily and optimize for the web.</p>
+            </div>
+            <a href="./image-resizer.html" class="gradient-button mt-4">Try Image Resizer</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Optimizer (Compressor) ✨</h3>
+                <p class="text-gray-300">Compress image files while preserving quality.</p>
+            </div>
+            <a href="./image-compressor.html" class="gradient-button mt-4">Try Image Optimizer</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Format Converter 🔄</h3>
+                <p class="text-gray-300">Convert images between various formats.</p>
+            </div>
+            <a href="./image-converter.html" class="gradient-button mt-4">Try Format Converter</a>
+          </div>
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Image Upscaler 🔎</h3>
+                <p class="text-gray-300">Increase image resolution client-side.</p>
             </div>
             <a href="./image-upscaler.html" class="gradient-button mt-4">Try Image Upscaler</a>
           </div>
-
-          <!-- Background Remover -->
           <div class="tool-card">
             <div>
-                <h3 class="text-2xl font-bold text-white">Background Remover 🪄</h3>
-                <p class="text-base text-gray-300">Remove image backgrounds automatically using AI.</p>
+                <h3 class="text-white">Background Remover 🪄</h3>
+                <p class="text-gray-300">Remove image backgrounds automatically using AI.</p>
             </div>
             <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
           </div>
@@ -198,54 +316,198 @@
 
     <!-- PDF Tools Section -->
     <section>
-        <h2 class="text-3xl font-bold text-white mb-6">📄 PDF Tools</h2> <!-- Tailwind's mb-4, increased to mb-6 -->
+        <h2 class="text-3xl font-bold text-white mb-6">📄 PDF Tools</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- PDF Merger -->
           <div class="tool-card">
             <div>
-                <h3 class="text-2xl font-bold text-white">PDF Merger ✨</h3>
-                <p class="text-base text-gray-300">Merge multiple PDF files into one easily.</p>
+                <h3 class="text-white">PDF Merger ✨</h3>
+                <p class="text-gray-300">Merge multiple PDF files into one easily.</p>
             </div>
             <a href="./pdf-merger.html" class="gradient-button mt-4">Try PDF Merger</a>
           </div>
-
-          <!-- PDF Compressor -->
           <div class="tool-card">
             <div>
-                <h3 class="text-2xl font-bold text-white">PDF Optimizer (Compressor) ⚙️</h3>
-                <p class="text-base text-gray-300">Attempt to compress PDFs to reduce file size.</p>
+                <h3 class="text-white">PDF Optimizer (Compressor) ⚙️</h3>
+                <p class="text-gray-300">Attempt to compress PDFs to reduce file size.</p>
             </div>
             <a href="./pdf-compressor.html" class="gradient-button mt-4">Try PDF Optimizer</a>
           </div>
         </div>
     </section>
 
-    <!-- Bottom Ad -->
-    <div class="ad-container my-8"> <!-- Tailwind's my-8 -->
+    <!-- Bottom Ad - REPLACE WITH YOUR ADSTERRA CODE -->
+    <div class="ad-container my-8">
+      <!--
+        PASTE YOUR ADSTERRA AD CODE FOR THE BOTTOM BANNER (e.g., 728x90) HERE.
+        It will likely be a <script> tag provided by Adsterra.
+        Make sure to remove this comment block and the example script below
+        once you've pasted your actual code.
+
+        Example Adsterra Banner Script Structure (REPLACE THIS ENTIRE SCRIPT WITH YOURS):
+      -->
       <script type="text/javascript">
-        atOptions = {
-          'key': '1b4ab7bf9b345f519520b8920fe6ffec',
-          'format': 'iframe',
-          'height': 90,
-          'width': 728,
-          'params': {}
-        };
+          atOptions = {
+              'key' : 'YOUR_ADSTERRA_PLACEMENT_KEY_FOR_BOTTOM_AD', // <-- REPLACE THIS with your actual key from Adsterra
+              'format' : 'iframe', // Or other format as specified by Adsterra
+              'height' : 90,       // Adjust if your ad unit has different dimensions
+              'width' : 728,       // Adjust if your ad unit has different dimensions
+              'params' : {}
+          };
+          // The line below might be slightly different based on Adsterra's current script generation.
+          // ALWAYS use the exact script provided in your Adsterra dashboard.
+          // document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://ADSTERRA_CDN_DOMAIN.com/' + atOptions.key + '/invoke.js"></scr' + 'ipt>');
       </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+      <!-- If your Adsterra code is just a single script tag that writes an iframe,
+           you might not need the `atOptions` part directly in your HTML,
+           but Adsterra will provide the full snippet.
+           Some Adsterra ads might just be a single line like:
+           <script async="async" data-cfasync="false" src="//ADSTERRA_CDN_DOMAIN.com/PLACEMENT_ID/invoke.js"></script>
+           <div id="container-PLACEMENT_ID"></div>
+      -->
     </div>
   </main>
 
-  <footer class="mt-auto py-8"> <!-- mt-auto to push footer down, removed bg-opacity -->
+  <footer class="mt-auto py-8">
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
       <p class="text-gray-300 text-lg font-bold">© <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
-      <nav class="mt-4 flex justify-center space-x-6"> <!-- Tailwind's space-x-4, increased to 6 -->
-        <a href="./privacy.html" class="text-gray-300 hover:text-white text-base font-bold">Privacy Policy 📜</a> <!-- Adjusted font size -->
-        <a href="./terms.html" class="text-gray-300 hover:text-white text-base font-bold">Terms of Service 📝</a> <!-- Adjusted font size -->
+      <nav class="mt-4 flex flex-wrap justify-center space-x-4 sm:space-x-6">
+        <a href="#" id="aboutLink" class="text-gray-300 hover:text-white text-base font-bold py-1">About Us ℹ️</a>
+        <a href="#" id="contactLink" class="text-gray-300 hover:text-white text-base font-bold py-1">Contact Us 📧</a>
+        <a href="#" id="privacyLink" class="text-gray-300 hover:text-white text-base font-bold py-1">Privacy Policy 📜</a>
+        <a href="#" id="termsLink" class="text-gray-300 hover:text-white text-base font-bold py-1">Terms of Service 📝</a>
       </nav>
     </div>
   </footer>
+
+  <!-- Modal Backdrop -->
+  <div id="modalBackdrop" class="modal-backdrop">
+    <!-- About Us Modal -->
+    <div id="aboutModal" class="modal" style="display: none;">
+        <span class="modal-close-button" data-modal-id="aboutModal">×</span>
+        <h3 class="modal-title">About Us ℹ️</h3>
+        <div class="modal-body">
+            <p>Cosmic Tools is dedicated to providing free, easy-to-use online tools for image and PDF processing. Our mission is to make digital tasks simpler and more accessible for everyone.</p>
+            <p>We believe in privacy and client-side processing where possible, ensuring your files stay secure.</p>
+            <p>Explore the cosmos of digital convenience with Cosmic Tools!</p>
+        </div>
+    </div>
+    <div id="contactModal" class="modal" style="display: none;">
+        <span class="modal-close-button" data-modal-id="contactModal">×</span>
+        <h3 class="modal-title">Contact Us 📧</h3>
+        <div class="modal-body">
+            <p>For business inquiries, partnerships, or support, please reach out to us at:</p>
+            <p><a href="mailto:businesssyarnob@gmail.com">businesssyarnob@gmail.com</a></p>
+            <p>We aim to respond to all inquiries within 2-3 business days.</p>
+        </div>
+    </div>
+    <div id="privacyModal" class="modal" style="display: none;">
+        <span class="modal-close-button" data-modal-id="privacyModal">×</span>
+        <h3 class="modal-title">Privacy Policy 📜</h3>
+        <div class="modal-body">
+            <p><strong>Last Updated: <span class="dynamicDate"></span></strong></p>
+            <p>Your privacy is important to us at Cosmic Tools. This Privacy Policy outlines how we handle your information when you use our services.</p>
+            <p><strong>Information We Collect:</strong> For most of our tools, processing is done client-side in your browser. This means your files are NOT uploaded to our servers for these tools (e.g., image resizer, image converter, client-side PDF tools). For tools requiring server-side processing (like AI Background Remover), files are temporarily uploaded, processed, and then deleted from our servers shortly after processing is complete or the session ends. We do not store your processed files long-term for such services.</p>
+            <p><strong>Cookies and Tracking:</strong> We may use cookies for essential site functionality and anonymous analytics to improve our services. Third-party advertisers (like Adsterra) may also use cookies to serve ads based on a user's prior visits to this website or other websites. You can often manage your ad preferences through the advertising network's own settings or opt-out mechanisms.</p>
+            <p><strong>Data Security:</strong> We implement reasonable security measures to protect information, but no internet transmission is 100% secure.</p>
+            <p><strong>Third-Party Links:</strong> Our site may contain links to other websites. We are not responsible for their privacy practices.</p>
+            <p><strong>Changes to This Policy:</strong> We may update this policy. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+            <p><strong>Contact Us:</strong> If you have any questions about this Privacy Policy, please contact us via the details provided in our "Contact Us" section.</p>
+        </div>
+    </div>
+    <div id="termsModal" class="modal" style="display: none;">
+        <span class="modal-close-button" data-modal-id="termsModal">×</span>
+        <h3 class="modal-title">Terms of Service 📝</h3>
+        <div class="modal-body">
+            <p><strong>Last Updated: <span class="dynamicDate"></span></strong></p>
+            <p>Welcome to Cosmic Tools! By accessing or using our website and services, you agree to be bound by these Terms of Service.</p>
+            <p><strong>1. Use of Services:</strong> Cosmic Tools provides a collection of free online tools for image and PDF processing. You agree to use these tools responsibly and not for any unlawful purpose. You are solely responsible for the content you process using our tools.</p>
+            <p><strong>2. Intellectual Property:</strong> The content you process remains your property. We do not claim ownership of any files you upload or process. The Cosmic Tools website, its design, text, graphics, and underlying source code are the property of Cosmic Tools and are protected by copyright and other intellectual property laws.</p>
+            <p><strong>3. Disclaimer of Warranties:</strong> Our services are provided "as is" and "as available" without any warranties of any kind, express or implied. We do not guarantee that the services will be error-free, uninterrupted, or that defects will be corrected. We are not liable for any loss or damage that may result from your use of the tools, including data loss.</p>
+            <p><strong>4. Limitation of Liability:</strong> To the fullest extent permitted by law, Cosmic Tools shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the services.</p>
+            <p><strong>5. Prohibited Conduct:</strong> You agree not to use the services to:
+            <ul>
+                <li>- Upload or process any material that is illegal, harmful, defamatory, obscene, or infringing.</li>
+                <li>- Attempt to gain unauthorized access to our systems or engage in any activity that disrupts, diminishes the quality of, interferes with the performance of, or impairs the functionality of, the Service.</li>
+                <li>- Use any automated system, including "robots," "spiders," or "offline readers," to access the Service in a manner that sends more request messages to the Cosmic Tools servers than a human can reasonably produce in the same period by using a conventional on-line web browser.</li>
+            </ul>
+            </p>
+            <p><strong>6. Changes to Terms:</strong> We reserve the right to modify these Terms at any time. We will post the revised Terms on this page. Your continued use of the Service after such changes constitutes your acceptance of the new Terms.</p>
+            <p><strong>7. Governing Law:</strong> These Terms shall be governed by and construed in accordance with the laws of [Your Jurisdiction - e.g., "the State of California, USA"], without regard to its conflict of law principles.</p>
+            <p><strong>Contact Us:</strong> If you have any questions about these Terms, please contact us.</p>
+        </div>
+    </div>
+  </div>
+
+
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    const dynamicDateElements = document.querySelectorAll('.dynamicDate');
+    const today = new Date();
+    const formattedDate = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`;
+    dynamicDateElements.forEach(el => el.textContent = formattedDate);
+
+    // Search Bar Functionality
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+
+    if (searchForm && searchInput) {
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `./search.html?query=${encodeURIComponent(query)}`;
+            }
+        });
+    }
+
+    // Modal Logic
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTriggers = [
+        { linkId: 'aboutLink', modalId: 'aboutModal' },
+        { linkId: 'contactLink', modalId: 'contactModal' },
+        { linkId: 'privacyLink', modalId: 'privacyModal' },
+        { linkId: 'termsLink', modalId: 'termsModal' }
+    ];
+    let activeModal = null;
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal && modalBackdrop) {
+            modalBackdrop.style.display = 'flex';
+            modal.style.display = 'block';
+            activeModal = modal;
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    function closeModal() {
+        if (activeModal && modalBackdrop) {
+            modalBackdrop.style.display = 'none';
+            activeModal.style.display = 'none';
+            activeModal = null;
+            document.body.style.overflow = '';
+        }
+    }
+    modalTriggers.forEach(trigger => {
+        const link = document.getElementById(trigger.linkId);
+        if (link) {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                openModal(trigger.modalId);
+            });
+        }
+    });
+    const closeButtons = document.querySelectorAll('.modal-close-button');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => { closeModal(); });
+    });
+    if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', (event) => {
+            if (event.target === modalBackdrop) { closeModal(); }
+        });
+    }
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && activeModal) { closeModal(); }
+    });
   </script>
 </body>
 </html>
