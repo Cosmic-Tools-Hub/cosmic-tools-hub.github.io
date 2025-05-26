@@ -5,15 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Cosmic Tools: Free online tools for image and PDF processing. Resize, compress, convert images, merge and compress PDFs, and more.">
-  <!-- "search tools" keyword removed -->
-  <meta name="keywords" content="image tools, PDF tools, free online tools, compress images, convert images, merge PDF, compress PDF, image resizer, background remover, image upscaler">
+  <meta name="keywords" content="image tools, PDF tools, free online tools, compress images, convert images, merge PDF, compress PDF, image resizer, background remover, image upscaler, color palette extractor">
   <meta name="author" content="Cosmic Tools" />
   <meta name="robots" content="index, follow" />
   <title>Cosmic Tools 🌠 - Free Online Image & PDF Tools</title>
   <link rel="icon" type="image/png" href="./favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome link can be removed if search icon was its only use -->
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -21,7 +18,7 @@
         --navy-dark: #172a45;
         --navy-card: #112240;
         --navy-card-transparent: rgba(17, 34, 64, 0.85);
-        --navy-input: #1d3454; /* Variable kept as it could be used by modals or other inputs if added later */
+        --navy-input: #1d3454;
         --navy-border: #304a6e;
         --text-primary: #e6f1ff;
         --text-secondary: #ccd6f6;
@@ -46,7 +43,6 @@
       font-family: 'Orbitron', sans-serif;
       color: var(--text-primary);
     }
-    /* Removed input::placeholder from this rule as search input is gone */
     p, a, .modal-body p {
         font-family: 'Montserrat', sans-serif;
         color: var(--text-secondary);
@@ -85,6 +81,7 @@
       border-radius: 0.375rem;
       display: inline-block;
       text-decoration: none;
+      text-align: center; /* Ensure text is centered for buttons */
     }
     .gradient-button:hover {
       background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
@@ -125,9 +122,6 @@
         min-height: 90px;
     }
 
-    /* Search Bar Styles REMOVED */
-
-    /* Modal Styles (Unchanged) */
     .modal-backdrop {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: rgba(0, 0, 0, 0.7); display: none;
@@ -157,17 +151,14 @@
   <div class="starry-bg"></div>
   <header class="shadow-lg">
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <!-- Original flex container that held title & search bar is removed, title block stands alone -->
-      <div class="text-center sm:text-left"> <!-- Adjusted for standalone title alignment -->
+      <div class="text-center sm:text-left">
         <h1 class="text-4xl font-bold text-white">Cosmic Tools 🌠</h1>
         <p class="mt-2 text-lg text-gray-300">Free Online Image & PDF Processing</p>
       </div>
-      <!-- Search Form and its container div completely removed -->
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
-    <!-- Top Ad - Script is PRESENT -->
     <div class="ad-container mb-6">
       <script type="text/javascript">
         atOptions = {
@@ -181,7 +172,6 @@
       <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
     </div>
 
-    <!-- Popular Tools Section (Content is UNCHANGED from your original) -->
     <section class="mb-12">
         <h2 class="text-3xl font-bold text-white mb-6">🌟 Popular Tools</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,7 +199,6 @@
         </div>
     </section>
 
-    <!-- Image Tools Section (Content is UNCHANGED from your original) -->
     <section class="mb-12">
         <h2 class="text-3xl font-bold text-white mb-6">🖼️ Image Tools</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -248,10 +237,17 @@
             </div>
             <a href="./bg-remover.html" class="gradient-button mt-4">Try Background Remover</a>
           </div>
+          <!-- New Tool Card Added Here -->
+          <div class="tool-card">
+            <div>
+                <h3 class="text-white">Color Palette Extractor 🎨</h3>
+                <p class="text-gray-300">Extract beautiful color schemes from your images.</p>
+            </div>
+            <a href="https://cosmic-tools-hub.github.io/color-palette-extractor.html" class="gradient-button mt-4">Try Palette Extractor</a>
+          </div>
         </div>
     </section>
 
-    <!-- PDF Tools Section (Content is UNCHANGED from your original) -->
     <section>
         <h2 class="text-3xl font-bold text-white mb-6">📄 PDF Tools</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -272,7 +268,6 @@
         </div>
     </section>
 
-    <!-- Bottom Ad - Script is PRESENT -->
     <div class="ad-container my-8">
       <script type="text/javascript">
         atOptions = {
@@ -299,9 +294,7 @@
     </div>
   </footer>
 
-  <!-- Modal Backdrop -->
   <div id="modalBackdrop" class="modal-backdrop">
-    <!-- About Us Modal (Full content preserved) -->
     <div id="aboutModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="aboutModal">×</span>
         <h3 class="modal-title">About Us ℹ️</h3>
@@ -311,7 +304,6 @@
             <p>Explore the cosmos of digital convenience with Cosmic Tools!</p>
         </div>
     </div>
-    <!-- Contact Us Modal (Full content preserved) -->
     <div id="contactModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="contactModal">×</span>
         <h3 class="modal-title">Contact Us 📧</h3>
@@ -321,7 +313,6 @@
             <p>We aim to respond to all inquiries within 2-3 business days.</p>
         </div>
     </div>
-    <!-- Privacy Policy Modal (Full content preserved) -->
     <div id="privacyModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="privacyModal">×</span>
         <h3 class="modal-title">Privacy Policy 📜</h3>
@@ -336,7 +327,6 @@
             <p><strong>Contact Us:</strong> If you have any questions about this Privacy Policy, please contact us via the details provided in our "Contact Us" section.</p>
         </div>
     </div>
-    <!-- Terms of Service Modal (Full content preserved) -->
     <div id="termsModal" class="modal" style="display: none;">
         <span class="modal-close-button" data-modal-id="termsModal">×</span>
         <h3 class="modal-title">Terms of Service 📝</h3>
@@ -369,9 +359,6 @@
     const formattedDate = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`;
     dynamicDateElements.forEach(el => el.textContent = formattedDate);
 
-    // Search Bar JavaScript Functionality and related variables COMPLETELY REMOVED
-
-    // Modal Logic (Unchanged)
     const modalBackdrop = document.getElementById('modalBackdrop');
     const modalTriggers = [
         { linkId: 'aboutLink', modalId: 'aboutModal' },
