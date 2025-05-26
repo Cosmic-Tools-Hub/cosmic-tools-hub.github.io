@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cosmic Tools 🌠 - Color Palette Extractor</title>
+    <meta name="description" content="Cosmic Tools Color Palette Extractor: Instantly extract beautiful color palettes from your images. Free, fast, and easy for designers and artists.">
+    <meta name="keywords" content="color palette extractor, image color picker, get colors from image, dominant colors, hex codes, rgb values, online tool, design tool, color scheme generator, cosmic tools">
+    <meta name="author" content="Cosmic Tools">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Cosmic Tools - Color Palette Extractor">
+    <meta property="og:description" content="Upload an image and instantly extract its dominant color and a full color palette. Perfect for your design projects!">
+    <meta property="og:image" content="https://cosmic-tools-hub.github.io/og-image-palette-extractor.jpg">
+    <meta property="og:url" content="https://cosmic-tools-hub.github.io/palette-extractor.html">
+
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy-darkest: #0a192f;
+            --navy-dark: #172a45;
+            --navy-card: #112240;
+            --navy-input: #1d3454;
+            --navy-border: #304a6e;
+            --text-primary: #e6f1ff;
+            --text-secondary: #ccd6f6;
+            --text-muted: #8892b0;
+            --accent-pink: #f92a82;
+            --accent-cyan: #00d4ff;
+            --accent-teal-highlight: #64FFDA;
+            --error-red: #ff7b72;
+            --success-green: var(--accent-teal-highlight);
+            --info-blue: #60a5fa;
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--navy-darkest), var(--navy-dark));
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh; display: flex; flex-direction: column; margin: 0;
+        }
+        .page-container {
+            flex-grow: 1; display: flex; justify-content: center;
+            width: 100%; padding-top: 1.5rem;
+        }
+        .content-with-side-ad {
+            display: flex; flex-direction: row; justify-content: center;
+            gap: 2rem; width: 100%; max-width: calc(1024px + 160px + 2rem);
+        }
+        main.main-content-area {
+            flex-grow: 1; max-width: 1024px; padding: 0 1rem;
+        }
+        aside.side-ad-area {
+            width: 160px; flex-shrink: 0; min-height: 600px; display: none;
+        }
+
+        @media (min-width: 1200px) {
+            aside.side-ad-area { display: block; }
+            main.main-content-area { padding: 0; }
+        }
+        @media (max-width: 1199px) {
+            .page-container { padding-top: 1rem; }
+            .content-with-side-ad { flex-direction: column; align-items: center; max-width: 1024px; }
+            aside.side-ad-area { display: none; }
+        }
+
+        h1, h2, h3, button, label { font-family: 'Orbitron', sans-serif; color: var(--text-primary); }
+        p, li, span, input::placeholder, .font-sans, .color-value { color: var(--text-secondary); }
+
+        .starry-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.2; z-index: -1;
+        }
+
+        .bg-card { background-color: var(--navy-card); }
+        .p-main-content { padding: 1.5rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+
+        .gradient-button {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-cyan));
+            transition: background 0.3s ease, transform 0.1s ease; border: none;
+            color: var(--text-primary); font-weight: bold; padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem; text-align: center; cursor: pointer;
+        }
+        .gradient-button:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
+            transform: translateY(-1px);
+        }
+        .gradient-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .uploader-block-centered {
+            max-width: 500px; margin: 0 auto 1.5rem auto;
+        }
+        .custom-file-input-container {
+            background-color: var(--navy-input); border: 1px solid var(--navy-border);
+            color: var(--text-secondary); padding: 0.75rem; border-radius: 0.375rem;
+            width: 100%; cursor: pointer; text-align: center; transition: border-color 0.2s ease;
+            margin-bottom: 0.75rem; display: block;
+        }
+        .custom-file-input-container:hover, .custom-file-input-container.dragover {
+            border-color: var(--accent-teal-highlight);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.4);
+        }
+        .custom-file-input-container input[type="file"] { display: none; }
+        #extractColorsButton {
+             width: 100%; padding: 0.75rem; font-size: 1.125rem;
+        }
+
+        .status-message {
+            text-align: center; margin: 1rem auto; font-weight: bold;
+            padding: 0.75rem; border-radius: 0.375rem; border: 1px solid transparent;
+            font-family: 'Montserrat', sans-serif; max-width: 500px;
+        }
+        .status-error { color: var(--error-red); background-color: rgba(255, 123, 114, 0.1); border-color: var(--error-red); }
+        .status-success { color: var(--success-green); background-color: rgba(100, 255, 218, 0.1); border-color: var(--success-green); }
+        .status-info { color: var(--info-blue); background-color: rgba(96, 165, 250, 0.1); border-color: var(--info-blue); }
+
+        .hidden { display: none !important; }
+
+        .results-area { margin-top: 2rem; }
+
+        .image-preview-wrapper, .dominant-color-wrapper, .palette-wrapper {
+            background-color: var(--navy-input); border: 1px solid var(--navy-border);
+            padding: 1rem; border-radius: 0.5rem; text-align: center;
+            max-width: 500px; margin: 0 auto 1.5rem auto;
+        }
+        .palette-wrapper { max-width: 100%; }
+
+        .image-preview-wrapper h3, .dominant-color-wrapper h3, .palette-wrapper h3 {
+            font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary);
+        }
+        #uploadedImage {
+            max-width: 100%; max-height: 350px; border-radius: 0.375rem; object-fit: contain;
+            margin: 0 auto 1rem auto; display: block; border: 1px solid var(--navy-border);
+            background-image:
+                linear-gradient(45deg, var(--navy-dark) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--navy-dark) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--navy-dark) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--navy-dark) 75%);
+            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        #imagePlaceholderText {
+            color: var(--text-muted); padding: 20px; border: 2px dashed var(--navy-border);
+            border-radius: 5px; min-height: 100px; text-align: center;
+        }
+        #palettePlaceholderText {
+            color: var(--text-muted); padding: 20px; border: 2px dashed var(--navy-border);
+            border-radius: 5px; min-height: 100px; display: flex; align-items: center; justify-content: center;
+            width: 100%;
+        }
+
+        #dominantColorSwatch {
+            width: 100px; height: 100px; border-radius: 0.5rem;
+            margin: 0 auto 0.75rem auto; border: 2px solid var(--navy-border);
+        }
+        .color-value {
+            font-family: 'Montserrat', sans-serif; font-size: 0.9rem;
+            margin-bottom: 0.25rem; cursor: pointer;
+            padding: 0.2rem 0.4rem; border-radius: 0.25rem; transition: background-color 0.2s;
+        }
+        .color-value:hover { background-color: var(--navy-border); }
+
+        #paletteContainer {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem;
+        }
+        .color-swatch {
+            width: 70px; height: 90px; border-radius: 0.375rem;
+            border: 1px solid var(--navy-border); cursor: pointer;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            align-items: center; overflow: hidden; transition: transform 0.2s ease;
+        }
+        .color-swatch:hover { transform: scale(1.05); }
+        .color-swatch span {
+            font-size: 0.75rem; color: var(--text-primary);
+            background-color: rgba(10, 25, 47, 0.7);
+            padding: 0.2rem 0.3rem; width: 100%; text-align: center;
+            word-break: break-all;
+        }
+
+        .list-item-emoji { margin-right: 0.5em; }
+        .primary-top-ad-container {
+            display: flex; justify-content: center; align-items: center;
+            margin: 1.5rem auto; min-height: 90px; width: fit-content;
+        }
+        footer { background-color: var(--navy-darkest); margin-top: auto; padding: 2rem 0; }
+        footer p, footer a { color: var(--text-secondary); }
+        footer a:hover { color: var(--accent-teal-highlight); }
+    </style>
+</head>
+<body>
+    <div class="starry-bg"></div>
+    <header style="background-color: var(--navy-darkest); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 1.5rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-size: 2.25rem; font-weight: bold;">Cosmic Tools 🌠 - Color Palette Extractor</h1>
+                <p style="margin-top: 0.5rem; font-size: 1.125rem;">Extract vibrant color schemes from your images with cosmic ease!</p>
+            </div>
+            <a href="/" class="gradient-button" style="padding: 0.5rem 1rem; text-decoration: none;">
+                ← Cosmic Hub
+            </a>
+        </div>
+    </header>
+
+    <div class="primary-top-ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '1b4ab7bf9b345f519520b8920fe6ffec',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/1b4ab7bf9b345f519520b8920fe6ffec/invoke.js"></script>
+    </div>
+
+    <div class="page-container">
+        <div class="content-with-side-ad">
+            <main class="main-content-area">
+                <div class="bg-card p-main-content rounded-lg shadow-xl">
+                    <h2 style="font-size: 1.875rem; font-weight: bold; text-align: center; margin-bottom: 1.5rem;">Upload Your Image to Extract Colors</h2>
+
+                    <div class="uploader-block-centered">
+                        <label for="imageFile" class="custom-file-input-container">
+                            <span id="fileUploadText">Click to Choose File or Drag & Drop Image ✨</span>
+                            <input type="file" id="imageFile" accept="image/png, image/jpeg, image/webp">
+                        </label>
+                        <button id="extractColorsButton" class="gradient-button" disabled>
+                            Extract Palette
+                        </button>
+                    </div>
+
+                    <div id="status" class="status-message hidden"></div>
+
+                    <div class="results-area">
+                        <div class="image-preview-wrapper" id="imagePreviewSection">
+                            <h3>Your Image 🖼️</h3>
+                            <img id="uploadedImage" src="#" alt="Uploaded image preview" style="display:none;">
+                            <p id="imagePlaceholderText">Image preview will appear here once uploaded.</p>
+                        </div>
+
+                        <div class="dominant-color-wrapper" id="dominantColorSection" style="display:none;">
+                            <h3>Dominant Color ✨</h3>
+                            <div id="dominantColorSwatch"></div>
+                            <p id="dominantColorHex" class="color-value" title="Click to copy HEX"></p>
+                            <p id="dominantColorRgb" class="color-value" title="Click to copy RGB"></p>
+                        </div>
+
+                        <div class="palette-wrapper" id="paletteSection" style="display:none;">
+                            <h3>Extracted Palette 🌈</h3>
+                            <div id="paletteContainer">
+                                <p id="palettePlaceholderText">Palette colors will appear here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="bg-card p-main-content rounded-lg shadow-xl" style="margin-top: 2.5rem;">
+                    <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">How to Use Color Palette Extractor</h2>
+                    <ol style="list-style: decimal; list-style-position: inside; color: var(--text-secondary); space-y: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: normal;">
+                        <li><span class="list-item-emoji">📤</span><strong>Upload Image:</strong> Drag & drop or click to select your image (PNG, JPG, or WEBP).</li>
+                        <li><span class="list-item-emoji">🎨</span><strong>Automatic Extraction:</strong> The tool will automatically process the image once selected.</li>
+                        <li><span class="list-item-emoji">✨</span><strong>View Colors:</strong> See the dominant color and a generated color palette from your image.</li>
+                        <li><span class="list-item-emoji">📋</span><strong>Copy Codes:</strong> Click on any HEX or RGB value to copy it to your clipboard.</li>
+                    </ol>
+                </section>
+            </main>
+
+            <aside class="side-ad-area">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : 'b76b4ebdfea57e3a5c5eedc01e04fe37',
+                        'format' : 'iframe',
+                        'height' : 600,
+                        'width' : 160,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/b76b4ebdfea57e3a5c5eedc01e04fe37/invoke.js"></script>
+            </aside>
+        </div>
+    </div>
+
+    <footer style="background-color: var(--navy-darkest); margin-top: auto; padding: 2rem 0;">
+        <div style="max-width: 1280px; margin: 0 auto; padding: 0 1rem; text-align: center;">
+            <p>Copyright © <span id="currentYear"></span> Cosmic Tools. All rights reserved.</p>
+            <nav style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+                <a href="/privacy.html" style="text-decoration:none;">Privacy Policy</a>
+                <a href="/terms.html" style="text-decoration:none;">Terms of Service</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const imageFileInput = document.getElementById('imageFile');
+        const fileUploadText = document.getElementById('fileUploadText'); // The span inside the label
+        const extractColorsButton = document.getElementById('extractColorsButton');
+
+        const imagePreviewSection = document.getElementById('imagePreviewSection');
+        const uploadedImage = document.getElementById('uploadedImage');
+        const imagePlaceholderText = document.getElementById('imagePlaceholderText');
+        const statusDiv = document.getElementById('status');
+
+        const dominantColorSection = document.getElementById('dominantColorSection');
+        const dominantColorSwatch = document.getElementById('dominantColorSwatch');
+        const dominantColorHex = document.getElementById('dominantColorHex');
+        const dominantColorRgb = document.getElementById('dominantColorRgb');
+
+        const paletteSection = document.getElementById('paletteSection');
+        const paletteContainer = document.getElementById('paletteContainer');
+        // const palettePlaceholderText = document.getElementById('palettePlaceholderText'); // Already a global const
+
+        let selectedFile = null;
+        let colorThief;
+
+        try {
+            colorThief = new ColorThief();
+        } catch (e) {
+            console.error("ColorThief library not found or failed to initialize.", e);
+            setStatus("Error: Color processing library failed to load. Please try again later.", "error");
+        }
+
+        imageFileInput.addEventListener('change', (event) => {
+            handleFileSelect(event.target.files);
+        });
+
+        const uploaderBlock = document.querySelector('.uploader-block-centered');
+        uploaderBlock.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            document.querySelector('.custom-file-input-container').classList.add('dragover');
+        });
+        uploaderBlock.addEventListener('dragleave', () => {
+            document.querySelector('.custom-file-input-container').classList.remove('dragover');
+        });
+        uploaderBlock.addEventListener('drop', (event) => {
+            event.preventDefault();
+            document.querySelector('.custom-file-input-container').classList.remove('dragover');
+            handleFileSelect(event.dataTransfer.files);
+        });
+
+        extractColorsButton.addEventListener('click', () => {
+            if (selectedFile && uploadedImage.src && uploadedImage.src !== '#') {
+                processImageForColors();
+            } else if (selectedFile) {
+                setStatus('Please wait for image to load or re-select.', 'info');
+            } else {
+                setStatus('Please select an image file first.', 'error');
+            }
+        });
+
+        function handleFileSelect(files) {
+            selectedFile = files[0];
+            if (selectedFile) {
+                if (!['image/png', 'image/jpeg', 'image/webp'].includes(selectedFile.type)) {
+                    setStatus('Invalid file type. Please select a PNG, JPG, or WEBP image.', 'error');
+                    resetUIState(); // This will reset fileUploadText
+                    return;
+                }
+                imagePreviewSection.style.display = 'block';
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block';
+                    imagePlaceholderText.style.display = 'none';
+                    extractColorsButton.disabled = true;
+                    extractColorsButton.textContent = 'Processing...';
+                    fileUploadText.innerHTML = 'Processing Image... ✨'; // Update text here
+                    setStatus('Image loaded, processing colors...', 'info');
+                    setTimeout(processImageForColors, 100);
+                }
+                reader.onerror = () => {
+                    setStatus('Error reading file.', 'error');
+                    resetUIState(); // This will reset fileUploadText
+                }
+                reader.readAsDataURL(selectedFile);
+                // No longer setting fileUploadText to selectedFile.name here
+                dominantColorSection.style.display = 'none';
+                paletteSection.style.display = 'none';
+                paletteContainer.innerHTML = '';
+                const pPlaceholder = document.getElementById('palettePlaceholderText');
+                if(pPlaceholder) {
+                    pPlaceholder.textContent = 'Palette colors will appear here.';
+                    paletteContainer.appendChild(pPlaceholder);
+                    pPlaceholder.style.display = 'flex';
+                }
+            } else {
+                resetUIState();
+            }
+        }
+
+        function processImageForColors() {
+            if (!selectedFile || !uploadedImage.src || uploadedImage.src === '#' || !colorThief) {
+                if (!colorThief) setStatus('Color library error.', 'error');
+                extractColorsButton.disabled = selectedFile ? false : true;
+                extractColorsButton.textContent = 'Extract Palette';
+                if(selectedFile) fileUploadText.innerHTML = 'Choose Another Image ✨'; // Update if processing cannot start but file is selected
+                else fileUploadText.innerHTML = 'Click to Choose File or Drag & Drop Image ✨';
+                return;
+            }
+            if (!uploadedImage.complete || uploadedImage.naturalWidth === 0) {
+                setStatus('Image rendering... Please wait.', 'info');
+                // Keep fileUploadText as "Processing Image..."
+                setTimeout(processImageForColors, 200);
+                return;
+            }
+
+            // fileUploadText.innerHTML is already "Processing Image..." or will be updated in finally
+            setStatus('Extracting cosmic colors... 🌌', 'info');
+            extractColorsButton.disabled = true;
+            extractColorsButton.textContent = 'Processing...';
+
+            try {
+                const dominant = colorThief.getColor(uploadedImage);
+                displayDominantColor(dominant);
+                dominantColorSection.style.display = 'block';
+
+                const palette = colorThief.getPalette(uploadedImage, 8);
+                displayPalette(palette);
+                paletteSection.style.display = 'block';
+
+                if (dominant || (palette && palette.length > 0)) {
+                    setStatus('Colors extracted successfully! ✨', 'success');
+                } else {
+                    setStatus('Could not extract distinct colors. Try a different image.', 'info');
+                }
+
+            } catch (error) {
+                console.error("Error extracting colors:", error);
+                setStatus(`Error extracting colors: ${error.message}. Try a different image.`, 'error');
+                dominantColorSection.style.display = 'none';
+                paletteSection.style.display = 'none';
+            } finally {
+                extractColorsButton.disabled = false;
+                extractColorsButton.textContent = 'Extract Palette';
+                fileUploadText.innerHTML = 'Choose Another Image ✨'; // Final text after attempt
+            }
+        }
+
+        function rgbToHex(rgbArray) {
+            return "#" + rgbArray.map(c => {
+                const hex = c.toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
+            }).join('');
+        }
+
+        function displayDominantColor(rgbArray) {
+            if (!rgbArray) return;
+            const hex = rgbToHex(rgbArray);
+            dominantColorSwatch.style.backgroundColor = hex;
+            dominantColorHex.textContent = `HEX: ${hex}`;
+            dominantColorHex.onclick = () => copyToClipboard(hex, `HEX ${hex} copied!`);
+            dominantColorRgb.textContent = `RGB: (${rgbArray.join(', ')})`;
+            dominantColorRgb.onclick = () => copyToClipboard(`rgb(${rgbArray.join(', ')})`, `RGB (${rgbArray.join(', ')}) copied!`);
+        }
+
+        function displayPalette(paletteRgbArray) {
+            const pPlaceholder = document.getElementById('palettePlaceholderText');
+            if(pPlaceholder) pPlaceholder.style.display = 'none';
+            paletteContainer.innerHTML = '';
+
+            if (!paletteRgbArray || paletteRgbArray.length === 0) {
+                 if(pPlaceholder) {
+                    pPlaceholder.textContent = 'No distinct palette found.';
+                    paletteContainer.appendChild(pPlaceholder);
+                    pPlaceholder.style.display = 'flex';
+                 }
+                return;
+            }
+
+            paletteRgbArray.forEach(rgb => {
+                const hex = rgbToHex(rgb);
+                const swatchDiv = document.createElement('div');
+                swatchDiv.className = 'color-swatch';
+                swatchDiv.style.backgroundColor = hex;
+                swatchDiv.title = `Click to copy ${hex}`;
+                swatchDiv.onclick = () => copyToClipboard(hex, `Copied ${hex} to clipboard!`);
+
+                const hexSpan = document.createElement('span');
+                hexSpan.textContent = hex;
+                swatchDiv.appendChild(hexSpan);
+                paletteContainer.appendChild(swatchDiv);
+            });
+        }
+
+        function resetUIState() {
+            selectedFile = null;
+            extractColorsButton.disabled = true;
+            extractColorsButton.textContent = 'Extract Palette';
+            imagePreviewSection.style.display = 'block';
+            uploadedImage.src = "#";
+            uploadedImage.style.display = 'none';
+            imagePlaceholderText.style.display = 'block';
+            fileUploadText.innerHTML = 'Click to Choose File or Drag & Drop Image ✨'; // Reset text
+            dominantColorSection.style.display = 'none';
+            paletteSection.style.display = 'none';
+            statusDiv.classList.add('hidden');
+
+            const pPlaceholder = document.getElementById('palettePlaceholderText');
+            paletteContainer.innerHTML = '';
+            if (pPlaceholder) {
+                pPlaceholder.textContent = 'Palette colors will appear here.';
+                paletteContainer.appendChild(pPlaceholder);
+                pPlaceholder.style.display = 'flex';
+            }
+        }
+        resetUIState();
+
+        function setStatus(message, type = 'info') {
+            statusDiv.textContent = message;
+            statusDiv.className = 'status-message hidden';
+            statusDiv.classList.add(`status-${type}`);
+            statusDiv.classList.remove('hidden');
+        }
+
+        async function copyToClipboard(text, successMessage) {
+            try {
+                await navigator.clipboard.writeText(text);
+                setStatus(successMessage || `Copied: ${text}`, 'success');
+                setTimeout(() => {
+                    if (statusDiv.classList.contains('status-success') && (statusDiv.textContent === successMessage || statusDiv.textContent === `Copied: ${text}`)) {
+                         statusDiv.classList.add('hidden');
+                    }
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                setStatus('Failed to copy color code.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
